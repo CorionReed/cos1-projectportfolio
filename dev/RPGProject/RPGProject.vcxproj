@@ -139,7 +139,17 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="RPGProject.cpp" />
+    <ClCompile Include="Characters.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Items.cpp" />
+    <ClCompile Include="Monsters.cpp" />
+    <ClCompile Include="RPGProject%28main%29.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Characters.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Items.h" />
+    <ClInclude Include="Monsters.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
