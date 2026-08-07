@@ -2,11 +2,41 @@
 //
 
 #include <iostream>
+#include "Items.h"
+#include <vector>
 
 int main()
 {
     std::cout << "Hello World!\n";
+	std::vector<Items> weapons =
+	{
+		Items("Sword", "Weapon", 10, 0),
+		Items("Bow", "Weapon", 8, 0),
+		Items("Axe", "Weapon", 12, 0)
+	};
+	std::vector<Items> armors =
+	{
+		Items("Helmet", "Armor", 0, 5),
+		Items("Chestplate", "Armor", 0, 10),
+		Items("Leggings", "Armor", 0, 8)
+	};
+
+	for (const auto& weapon : weapons)
+	{
+		std::cout << "Weapon: " << weapon.GetName() << ", Type: " << weapon.GetType()
+			<< ", Attack Power: " << weapon.GetAttP() << ", Defense Power: " << weapon.GetDefP() << std::endl;
+	}
+	for (const auto& armor : armors)
+	{
+		std::cout << "Armor: " << armor.GetName() << ", Type: " << armor.GetType()
+			<< ", Attack Power: " << armor.GetAttP() << ", Defense Power: " << armor.GetDefP() << std::endl;
+	}
+
+	return 0;
 }
+
+
+
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
