@@ -2,35 +2,44 @@
 //
 
 #include <iostream>
-#include "Items.h"
+#include "Item.h"
+#include "Character.h"
 #include <vector>
 
 int main()
 {
     std::cout << "Hello World!\n";
-	std::vector<Items> weapons =
+	std::vector<Item> weapons =
 	{
-		Items("Sword", "Weapon", 10, 0),
-		Items("Bow", "Weapon", 8, 0),
-		Items("Axe", "Weapon", 12, 0)
+		Item("Sword", "Weapon", 10, 0),
+		Item("Bow", "Weapon", 8, 0),
+		Item("Axe", "Weapon", 12, 0)
 	};
-	std::vector<Items> armors =
+	std::vector<Item> armors =
 	{
-		Items("Helmet", "Armor", 0, 5),
-		Items("Chestplate", "Armor", 0, 10),
-		Items("Leggings", "Armor", 0, 8)
+		Item("Helmet", "Armor", 0, 5),
+		Item("Chestplate", "Armor", 0, 10),
+		Item("Leggings", "Armor", 0, 8)
 	};
 
 	for (const auto& weapon : weapons)
 	{
 		std::cout << "Weapon: " << weapon.GetName() << ", Type: " << weapon.GetType()
 			<< ", Attack Power: " << weapon.GetAttP() << ", Defense Power: " << weapon.GetDefP() << std::endl;
+		
 	}
+	std::cout << std::endl;
 	for (const auto& armor : armors)
 	{
 		std::cout << "Armor: " << armor.GetName() << ", Type: " << armor.GetType()
 			<< ", Attack Power: " << armor.GetAttP() << ", Defense Power: " << armor.GetDefP() << std::endl;
 	}
+	std::cout << std::endl;
+
+	Character Lucy("Lucy", 100, 15, 10, true, weapons[0], armors[1]);
+	std::cout << "Character: " << Lucy.GetName() << ", HP: " << Lucy.GetHp() << ", Attack Power: " << Lucy.GetAttP()
+		<< ", Defense Power: " << Lucy.GetDefP() << ", Unlocked: " << (Lucy.GetUnlocked() ? "Yes" : "No") << ", Weapon: " << Lucy.GetWeapon().GetName()<< ", Armor: "<< Lucy.GetArmor().GetName()<<  std::endl;
+
 
 	return 0;
 }

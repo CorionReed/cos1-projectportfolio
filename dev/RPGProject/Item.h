@@ -2,7 +2,7 @@
 
 #include <string>
 
-class Items
+class Item
 {
 	private:
 		std::string iName;
@@ -11,9 +11,9 @@ class Items
 		int iDefP;
 
 public:
-	Items();
+	Item();
 
-	Items(std::string name, std::string type, int attP, int defP);
+	Item(std::string name, std::string type, int attP, int defP);
 
 	void setName(std::string name);
 	std::string GetName() const;
