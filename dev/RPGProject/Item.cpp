@@ -5,15 +5,17 @@ Item::Item()
 {
 	iName = "";
 	iType = "";
-	iAttP = 0;
+	iMinAtt = 0;
+	iMaxAtt = 0;
 	iDefP = 0;
 }
 
-Item::Item(std::string name, std::string type, int attP, int defP)
+Item::Item(std::string name, std::string type, int minAtt, int maxAtt, int defP)
 {
 	iName = name;
 	iType = type;
-	iAttP = attP;
+	iMinAtt = minAtt;
+	iMaxAtt = maxAtt;
 	iDefP = defP;
 }
 
@@ -35,13 +37,22 @@ std::string Item::GetType() const
 	return iType;
 }
 
-void Item::setAttP(int attP)
+void Item::setMinAtt(int minAtt)
 {
-	iAttP = attP;
+	iMinAtt = minAtt;
 }
-int Item::GetAttP() const
+int Item::GetMinAtt() const
 {
-	return iAttP;
+	return iMinAtt;
+}
+
+void Item::setMaxAtt(int maxAtt)
+{
+	iMaxAtt = maxAtt;
+}
+int Item::GetMaxAtt() const
+{
+	return iMaxAtt;
 }
 
 void Item::setDefP(int defP)

@@ -84,3 +84,12 @@ Item Character::GetArmor() const
 {
 	return cArmor;
 }
+
+int Character::CalculateTotalAttP() const
+{
+	return cAttP + cWeapon.GetMinAtt();
+}
+int Character::CalculateTotalDefP() const
+{
+	return cDefP + cArmor.GetDefP();
+}

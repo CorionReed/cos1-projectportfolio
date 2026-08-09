@@ -7,13 +7,14 @@ class Item
 	private:
 		std::string iName;
 		std::string iType;
-		int iAttP;
+		int iMinAtt;
+		int iMaxAtt;
 		int iDefP;
 
 public:
 	Item();
 
-	Item(std::string name, std::string type, int attP, int defP);
+	Item(std::string name, std::string type, int minAttP, int maxAttP, int defP);
 
 	void setName(std::string name);
 	std::string GetName() const;
@@ -21,8 +22,11 @@ public:
 	void setType(std::string type);
 	std::string GetType() const;
 
-	void setAttP(int iAttP);
-	int GetAttP() const;
+	void setMinAtt(int iMinAtt);
+	int GetMinAtt() const;
+
+	void setMaxAtt(int iMaxAttP);
+	int GetMaxAtt() const;
 
 	void setDefP(int iDefP);
 	int GetDefP() const;
