@@ -63,3 +63,14 @@ int Item::GetDefP() const
 {
 	return iDefP;
 }
+int Item::GetRandomAttP() const
+{
+	if (iMinAtt == iMaxAtt)
+	{
+		return iMinAtt;
+	}
+	else
+	{
+		return rand() % (iMaxAtt - iMinAtt + 1) + iMinAtt;
+	}
+}

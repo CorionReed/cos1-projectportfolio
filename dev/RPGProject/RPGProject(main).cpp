@@ -5,21 +5,30 @@
 #include "Item.h"
 #include "Character.h"
 #include <vector>
+#include "Monster.h"
 
 int main()
 {
     std::cout << "Hello World!\n";
 	std::vector<Item> weapons =
 	{
+		Item("none", "Weapon", 0, 0, 0),
 		Item("Sword", "Weapon", 8, 10, 0),
 		Item("Bow", "Weapon", 8, 12, 0),
 		Item("Axe", "Weapon", 12, 15, 0)
 	};
 	std::vector<Item> armors =
 	{
+		Item("none", "Armor", 0, 0, 0),
 		Item("Helmet", "Armor",0, 0, 5),
 		Item("Chestplate", "Armor", 0, 0, 10),
 		Item("Leggings", "Armor", 0, 0, 8)
+	};
+	std::vector<Monster> monsters =
+	{
+		Monster("Goblin", 50, 5, 8, 2),
+		Monster("Orc", 80, 8, 12, 4),
+		Monster("Dragon", 150, 15, 20, 10)
 	};
 
 	for (const auto& weapon : weapons)
@@ -35,22 +44,27 @@ int main()
 			<< ", Defense Power: " << armor.GetDefP() << std::endl;
 	}
 	std::cout << std::endl;
-
+	for (const auto& monster : monsters)
+	{
+		std::cout << "Monster: " << monster.GetName() << ", HP: " << monster.GetHp()
+			<< ", Attack Power: " << monster.GetMinAttP() << " - " << monster.GetMaxAttP()
+			<< ", Defense Power: " << monster.GetDefP() << std::endl;
+	}
 	
 	std::vector<Character> characters =
 	{
-		Character("Lucy", 100, 15, 10, true, weapons[0], armors[1]),
-		Character("AZ", 120, 12, 15, true, weapons[1], armors[0]),
-		Character("Levy", 80, 18, 8, true, weapons[2], armors[2])
+		Character("Lucy", 100, 15, 10, true, weapons[0], armors[0]),
+		Character("AZ", 120, 12, 15, true, weapons[0], armors[0]),
+		Character("Levy", 80, 18, 8, true, weapons[0], armors[0])
 		
 	};
-	//for (const auto& character : characters)
-	//{
-	//	std::cout << "Character: " << character.GetName() << ", HP: " << character.GetHp() << ", Attack Power: " << character.GetAttP()
-	//		<< ", Defense Power: " << character.GetDefP() << ", Unlocked: " << (character.GetUnlocked() ? "Yes" : "No")
-	//		<< ", Weapon: " << character.GetWeapon().GetName() << ", Armor: " << character.GetArmor().GetName()
-	//		<< std::endl;
-	//}
+	for (const auto& character : characters)
+	{
+		std::cout << "Character: " << character.GetName() << ", HP: " << character.GetHp() << ", Attack Power: " << character.GetAttP()
+			<< ", Defense Power: " << character.GetDefP() << ", Unlocked: " << (character.GetUnlocked() ? "Yes" : "No")
+			<< ", Weapon: " << character.GetWeapon().GetName() << ", Armor: " << character.GetArmor().GetName()
+			<< std::endl;
+	}
 	std::cout << "Choose your character: \n";
 
 	for (size_t i = 0; i < characters.size(); ++i)
@@ -85,7 +99,7 @@ int main()
 	std::cout << "Choose your Weapon: \n";
 	for (size_t i = 0; i < weapons.size(); ++i)
 	{
-		std::cout << i + 1 << ". " << ", Attack Power: " << weapons[i].GetMinAtt() << " - " << weapons[i].GetMaxAtt() << std::endl;
+		std::cout << i + 1 << ". " << weapons[i].GetName()<< ", Attack Power: " << weapons[i].GetMinAtt() << " - " << weapons[i].GetMaxAtt() << std::endl;
 	}
 	int wChoice;
 	std::cout << "Enter the number of your choice: ";
