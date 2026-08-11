@@ -169,6 +169,13 @@ int main()
 			std::cout << "Invalid choice. Please select a valid monster." << std::endl;
 		}
 	} while (!validChoice);
+
+
+	/*Damage calculation and display*/
+	int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
+	int playerDam = selectedCharacter.GetAttP() + weaponDam;
+
+
 	
 	
 	return 0;
