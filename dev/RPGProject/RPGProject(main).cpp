@@ -152,6 +152,7 @@ int main()
 	{
 		std::cout << i + 1 << ". " << monsters[i].GetName() << std::endl;
 	}
+	Monster selectedMonster;
 	int mChoice;
 	validChoice = false;
 	do 
@@ -160,7 +161,7 @@ int main()
 		std::cin >> choice;
 		if (choice >= 1 && choice <= monsters.size())
 		{
-			Monster selectedMonster = monsters[choice - 1];
+			selectedMonster = monsters[choice - 1];
 			validChoice = true;
 			std::cout << "You selected: " << selectedMonster.GetName() << std::endl;
 		}
@@ -175,9 +176,83 @@ int main()
 	int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
 	int playerDam = selectedCharacter.GetAttP() + weaponDam;
 
+	int dealtDam = playerDam - selectedMonster.GetDefP();
+	if (dealtDam < 0)
+	{
+		dealtDam = 0;
+	}
 
-	
-	
+	/*Player att */
+	selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
+	std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
+
+	/*Monster att */
+	if (selectedMonster.GetHp() > 0)
+	{
+		int monsterDam = selectedMonster.GetRandomAttP();
+		int playerDef = selectedCharacter.CalculateTotalDefP();
+
+		int takenDam = (monsterDam * 2) - (playerDef / 2);
+		if (takenDam < 0)
+		{
+			takenDam = 0;
+		}
+		selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
+		std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
+	}
+	//int monsterDam = selectedMonster.GetRandomAttP();
+	//int playerDef = selectedCharacter.CalculateTotalDefP();
+
+	//int takenDam = (monsterDam * 2) - (playerDef / 2);
+	//if (takenDam < 0)
+	//{
+	//	takenDam = 0;
+	//}
+	//selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
+	//std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
+	//
+	while (selectedCharacter.GetHp() > 0 && selectedMonster.GetHp() > 0)
+	{
+		// Player's turn
+		int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
+		int playerDam = selectedCharacter.GetAttP() + weaponDam;
+		int dealtDam = playerDam - selectedMonster.GetDefP();
+		if (dealtDam < 0)
+		{
+			dealtDam = 0;
+		}
+		selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
+		if (selectedMonster.GetHp() < 0)
+		{
+			selectedMonster.setHp(0);
+		}
+		std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
+		if (selectedMonster.GetHp() <= 0)
+		{
+			std::cout << "You defeated the " << selectedMonster.GetName() << "!" << std::endl;
+			break;
+		}
+
+		// Monster's turn
+		int monsterDam = selectedMonster.GetRandomAttP();
+		int playerDef = selectedCharacter.CalculateTotalDefP();
+		int takenDam = (monsterDam * 2) - (playerDef / 2);
+		if (takenDam < 0)
+		{
+			takenDam = 0;
+		}
+		selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
+		if (selectedCharacter.GetHp() < 0)
+		{
+			selectedCharacter.setHp(0);
+		}
+		std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
+		if (selectedCharacter.GetHp() <= 0)
+		{
+			std::cout << "You were defeated by the " << selectedMonster.GetName() << "." << std::endl;
+			break;
+		}
+	}
 	return 0;
 }
 
