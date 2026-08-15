@@ -182,24 +182,26 @@ int main()
 		dealtDam = 0;
 	}
 
-	/*Player att */
-	selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
-	std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
+	///*Player att */
+	//selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
+	//std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
 
-	/*Monster att */
-	if (selectedMonster.GetHp() > 0)
-	{
-		int monsterDam = selectedMonster.GetRandomAttP();
-		int playerDef = selectedCharacter.CalculateTotalDefP();
+	///*Monster att */
+	//if (selectedMonster.GetHp() > 0)
+	//{
+	//	int monsterDam = selectedMonster.GetRandomAttP();
+	//	int playerDef = selectedCharacter.CalculateTotalDefP();
 
-		int takenDam = (monsterDam * 2) - (playerDef / 2);
-		if (takenDam < 0)
-		{
-			takenDam = 0;
-		}
-		selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
-		std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
-	}
+	//	
+
+	//	int takenDam = (monsterDam * 2) - (playerDef / 2);
+	//	if (takenDam < 0)
+	//	{
+	//		takenDam = 0;
+	//	}
+	//	selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
+	//	std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
+	//}
 	//int monsterDam = selectedMonster.GetRandomAttP();
 	//int playerDef = selectedCharacter.CalculateTotalDefP();
 
@@ -211,49 +213,173 @@ int main()
 	//selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
 	//std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
 	//
-	while (selectedCharacter.GetHp() > 0 && selectedMonster.GetHp() > 0)
-	{
-		// Player's turn
-		int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
-		int playerDam = selectedCharacter.GetAttP() + weaponDam;
-		int dealtDam = playerDam - selectedMonster.GetDefP();
-		if (dealtDam < 0)
-		{
-			dealtDam = 0;
-		}
-		selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
-		if (selectedMonster.GetHp() < 0)
-		{
-			selectedMonster.setHp(0);
-		}
-		std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
-		if (selectedMonster.GetHp() <= 0)
-		{
-			std::cout << "You defeated the " << selectedMonster.GetName() << "!" << std::endl;
-			break;
-		}
+	int playerStartHp = selectedCharacter.GetHp();
+	
 
-		// Monster's turn
-		int monsterDam = selectedMonster.GetRandomAttP();
-		int playerDef = selectedCharacter.CalculateTotalDefP();
-		int takenDam = (monsterDam * 2) - (playerDef / 2);
-		if (takenDam < 0)
+	int monsterStartHp = selectedMonster.GetHp();
+	
+
+	bool fightAgain = false;
+
+	do 
+	{
+		selectedCharacter.setHp(playerStartHp);
+
+		selectedMonster.setHp(monsterStartHp);
+
+		while (selectedCharacter.GetHp() > 0 && selectedMonster.GetHp() > 0)
 		{
-			takenDam = 0;
+			int battleChoice;
+			bool playerTurnOVer = false;
+			bool defending = false;
+
+
+			do
+			{
+
+
+				std::cout << "\nYour Turn: \n";
+				std::cout << "1. Attack\n";
+				std::cout << "2. Check Stats\n";
+				std::cout << "3. Defend\n";
+				std::cout << "Enter your choice: ";
+				std::cin >> battleChoice;
+
+				switch (battleChoice)
+				{
+				case 1: // Attack
+				{
+					int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
+					int playerDam = selectedCharacter.GetAttP() + weaponDam;
+					int dealtDam = playerDam - selectedMonster.GetDefP();
+
+					if (dealtDam < 0)
+					{
+						dealtDam = 0;
+					}
+					selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
+					if (selectedMonster.GetHp() < 0)
+					{
+						selectedMonster.setHp(0);
+					}
+					std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
+
+					playerTurnOVer = true;
+					break;
+				}
+
+				case 2: // Check Stats
+
+					std::cout << "Character: " << selectedCharacter.GetName() << ", HP: " << selectedCharacter.GetHp() << ", Attack Power: " << selectedCharacter.CalculateTotalAttP()
+						<< ", Defense Power: " << selectedCharacter.CalculateTotalDefP() << ", Weapon: " << selectedCharacter.GetWeapon().GetName()
+						<< ", Armor: " << selectedCharacter.GetArmor().GetName() << std::endl;
+					break;
+
+				case 3: // Defend
+
+					defending = true;
+					playerTurnOVer = true;
+
+					std::cout << "You brace yourself for the next attack, increasing your defense!" << std::endl;
+
+
+					break;
+
+				default:
+
+					std::cout << "Invalid choice. Please select a valid option." << std::endl;
+					break;
+
+				}
+			} while (!playerTurnOVer);
+			if (selectedMonster.GetHp() <= 0)
+			{
+				std::cout << "You defeated the " << selectedMonster.GetName() << "!" << std::endl;
+				break;
+
+			}
+			// Player's turn
+			//int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
+			//int playerDam = selectedCharacter.GetAttP() + weaponDam;
+			//int dealtDam = playerDam - selectedMonster.GetDefP();
+			//if (dealtDam < 0)
+			//{
+			//	dealtDam = 0;
+			//}
+			//selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
+			//if (selectedMonster.GetHp() < 0)
+			//{
+			//	selectedMonster.setHp(0);
+			//}
+			//std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
+			//if (selectedMonster.GetHp() <= 0)
+			//{
+			//	std::cout << "You defeated the " << selectedMonster.GetName() << "!" << std::endl;
+			//	break;
+			//}
+
+			// Monster's turn
+			int monsterDam = selectedMonster.GetRandomAttP();
+			int playerDef = selectedCharacter.CalculateTotalDefP();
+			if (defending)
+			{
+				playerDef *= 2; // Double the defense if defending
+				defending = false; // Reset defending status for next turn
+			}
+			int takenDam = (monsterDam * 2) - (playerDef / 2);
+			if (takenDam < 0)
+			{
+				takenDam = 0;
+			}
+			selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
+			if (selectedCharacter.GetHp() < 0)
+			{
+				selectedCharacter.setHp(0);
+			}
+			std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
+			if (selectedCharacter.GetHp() <= 0)
+			{
+				std::cout << "You were defeated by the " << selectedMonster.GetName() << "." << std::endl;
+				break;
+			}
 		}
-		selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
-		if (selectedCharacter.GetHp() < 0)
+		int postBattleChoice;
+		std::cout << "\nBattle Over! What would you like to do next?\n";
+		std::cout << "1. Fight Again\n";
+		std::cout << "2. Choose a Different Character\n";
+		std::cout << "3. Choose a Different Monster\n";
+		std::cout << "4. Exit Game\n";
+		std::cout << "Enter your choice: ";
+		std::cin >> postBattleChoice;
+
+		switch (postBattleChoice)
 		{
-			selectedCharacter.setHp(0);
-		}
-		std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
-		if (selectedCharacter.GetHp() <= 0)
-		{
-			std::cout << "You were defeated by the " << selectedMonster.GetName() << "." << std::endl;
+		case 1:
+			std::cout << "Restarting the battle with the same character and monster..." << std::endl;
+			fightAgain = true;
+			break;
+
+		case 2:
+			std::cout << "Returning to character selection..." << std::endl;
+			fightAgain = false;
+			break;
+
+		case 3:
+			std::cout << "Returning to monster selection..." << std::endl;
+			fightAgain = false;
+			break;
+
+		case 4:
+			std::cout << "Exiting the game. Thank you for playing!" << std::endl;
+			
+			return 0;
+
+		default:
+			std::cout << "Invalid Choice..." << std::endl;
+			fightAgain = false;
 			break;
 		}
-	}
-	return 0;
+	} while (fightAgain);
 }
 
 
