@@ -31,6 +31,8 @@ public:
 	void setDefP(int iDefP);
 	int GetDefP() const;
 
+	int GetRandomAttP() const;
+
 
 };
 
