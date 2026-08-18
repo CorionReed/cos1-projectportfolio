@@ -9,7 +9,7 @@
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    
 	//vectors for weapons, armors, monsters and characters
 	std::vector<Item> weapons =
 	{
@@ -67,327 +67,373 @@ int main()
 	//		<< std::endl;
 	//}
 	//std::cout << std::endl;
-	std::cout << "Choose your character: \n";
-
-	for (size_t i = 0; i < characters.size(); ++i)
-	{
-		if (characters[i].GetUnlocked())
-		{
-			std::cout << i + 1 << ". " << characters[i].GetName() << std::endl;
-		}
-		
-	}
-	/*this is the character selection loop*/
-	Character selectedCharacter;
-	int choice;
-	bool validChoice = false;
-	do
-	{
-		std::cout << "Enter the number of your choice: ";
-		std::cin >> choice;
-		if (choice >= 1 && choice <= characters.size() && characters[choice - 1].GetUnlocked())
-		{
-			selectedCharacter = characters[choice - 1];
-			validChoice = true;
-			std::cout << "You selected: " << selectedCharacter.GetName() << std::endl;
-		}
-		else
-		{
-			std::cout << "Invalid choice. Please select a valid character." << std::endl;
-		}
-	} while (!validChoice);
-
-	/*weapon selection loop*/
-	std::cout << "Choose your Weapon: \n";
-	for (size_t i = 0; i < weapons.size(); ++i)
-	{
-		std::cout << i + 1 << ". " << weapons[i].GetName()<< ", Attack Power: " << weapons[i].GetMinAtt() << " - " << weapons[i].GetMaxAtt() << std::endl;
-	}
-	int wChoice;
-	validChoice = false;
-	do
-	{
-		std::cout << "Enter the number of your choice: ";
-		std::cin >> wChoice;
-		if (wChoice >= 1 && wChoice <= weapons.size())
-		{
-			selectedCharacter.setWeapon(weapons[wChoice - 1]);
-			validChoice = true;
-			std::cout << "You equipped: " << selectedCharacter.GetWeapon().GetName() << std::endl;
-		}
-		else
-		{
-			std::cout << "Invalid choice. Please select a valid weapon." << std::endl;
-		}
-	} while (!validChoice);
-
-	/*armor selection loop*/
-	std::cout << "Choose your Armor: \n";
-	for (size_t i = 0; i < armors.size(); ++i)
-	{
-		std::cout << i + 1 << ". " << armors[i].GetName() << " Defence Stat: " << armors[i].GetDefP() << std::endl;
-	}
-	int aChoice;
-	validChoice = false;
-	do
-	{
-		std::cout << "Enter the number of your choice: ";
-		std::cin >> aChoice;
-		if (aChoice >= 1 && aChoice <= armors.size())
-		{
-			selectedCharacter.setArmor(armors[aChoice - 1]);
-			validChoice = true;
-			std::cout << "You equipped: " << selectedCharacter.GetArmor().GetName() << std::endl;
-		}
-		else
-		{
-			std::cout << "Invalid choice. Please select a valid armor." << std::endl;
-		}
-	} while (!validChoice);
-
-
-	int playerStartHp = selectedCharacter.GetHp();
-	bool chooseAnotherMonster = false;
+	int startChoice;
+	bool validStartChoice = false;
 	do 
 	{
-		/*monster selection loop*/
-		
-		for (size_t i = 0; i < monsters.size(); ++i)
+		std::cout << "====== Welcome to Pandemonium RPG! ======\n";
+		std::cout << "1. Start Game\n";
+		std::cout << "2. How to Play: \n";
+		std::cout << "3. Exit\n";
+		std::cout << "Enter your choice: ";
+		std::cin >> startChoice;
+		switch (startChoice)
 		{
-			std::cout << i + 1 << ". " << monsters[i].GetName() << std::endl;
+		case 1:
+			validStartChoice = true;
+			break;
+
+		case 2:
+			std::cout << "How to Play:\n";
+			std::cout << "1. Choose a character from the available options.\n";
+			std::cout << "2. Equip your character with a weapon and armor.\n";
+			std::cout << "3. Select a monster to fight against.\n";
+			std::cout << "4. During your turn, you can choose to attack, check stats, or defend.\n";
+			std::cout << "5. The battle continues until either you or the monster is defeated.\n";
+			std::cout << "6. After the battle, you can choose to fight again, select a different character, or exit the game.\n";
+			break;
+			
+		case 3:
+			std::cout << "Exiting the game. Thank you for playing!" << std::endl;
+			return 0;
+			
+		default:
+			std::cout << "Invalid choice. Please select a valid option." << std::endl;
 		}
-		Monster selectedMonster;
-		int mChoice;
-		validChoice = false;
+	} while (!validStartChoice);
+	
+	bool chooseAnotherCharacter = false;
+	do
+	{
+		std::cout << "Choose your character: \n";
+
+		for (size_t i = 0; i < characters.size(); ++i)
+		{
+			if (characters[i].GetUnlocked())
+			{
+				std::cout << i + 1 << ". " << characters[i].GetName() << std::endl;
+			}
+
+		}
+		chooseAnotherCharacter = false;
+		/*this is the character selection loop*/
+		Character selectedCharacter;
+		int choice;
+		bool validChoice = false;
 		do
 		{
-			std::cout << "Choose a monster to fight: ";
+			std::cout << "Enter the number of your choice: ";
 			std::cin >> choice;
-			if (choice >= 1 && choice <= monsters.size())
+			if (choice >= 1 && choice <= characters.size() && characters[choice - 1].GetUnlocked())
 			{
-				selectedMonster = monsters[choice - 1];
+				selectedCharacter = characters[choice - 1];
 				validChoice = true;
-				std::cout << "You selected: " << selectedMonster.GetName() << std::endl;
+				std::cout << "You selected: " << selectedCharacter.GetName() << std::endl;
 			}
 			else
 			{
-				std::cout << "Invalid choice. Please select a valid monster." << std::endl;
+				std::cout << "Invalid choice. Please select a valid character." << std::endl;
 			}
 		} while (!validChoice);
-		int monsterStartHp = selectedMonster.GetHp();
 
-
-		/*Damage calculation and display*/
-		int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
-		int playerDam = selectedCharacter.GetAttP() + weaponDam;
-
-		int dealtDam = playerDam - selectedMonster.GetDefP();
-		if (dealtDam < 0)
+		/*weapon selection loop*/
+		std::cout << "Choose your Weapon: \n";
+		for (size_t i = 0; i < weapons.size(); ++i)
 		{
-			dealtDam = 0;
+			std::cout << i + 1 << ". " << weapons[i].GetName() << ", Attack Power: " << weapons[i].GetMinAtt() << " - " << weapons[i].GetMaxAtt() << std::endl;
 		}
-
-		///*Player att */
-		//selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
-		//std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
-
-		///*Monster att */
-		//if (selectedMonster.GetHp() > 0)
-		//{
-		//	int monsterDam = selectedMonster.GetRandomAttP();
-		//	int playerDef = selectedCharacter.CalculateTotalDefP();
-
-		//	
-
-		//	int takenDam = (monsterDam * 2) - (playerDef / 2);
-		//	if (takenDam < 0)
-		//	{
-		//		takenDam = 0;
-		//	}
-		//	selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
-		//	std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
-		//}
-		//int monsterDam = selectedMonster.GetRandomAttP();
-		//int playerDef = selectedCharacter.CalculateTotalDefP();
-
-		//int takenDam = (monsterDam * 2) - (playerDef / 2);
-		//if (takenDam < 0)
-		//{
-		//	takenDam = 0;
-		//}
-		//selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
-		//std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
-		//
-		
-
-
-		
-
-
-		bool fightAgain = false;
-
+		int wChoice;
+		validChoice = false;
 		do
 		{
-			selectedCharacter.setHp(playerStartHp);
-
-			selectedMonster.setHp(monsterStartHp);
-
-			while (selectedCharacter.GetHp() > 0 && selectedMonster.GetHp() > 0)
+			std::cout << "Enter the number of your choice: ";
+			std::cin >> wChoice;
+			if (wChoice >= 1 && wChoice <= weapons.size())
 			{
-				int battleChoice;
-				bool playerTurnOVer = false;
-				bool defending = false;
+				selectedCharacter.setWeapon(weapons[wChoice - 1]);
+				validChoice = true;
+				std::cout << "You equipped: " << selectedCharacter.GetWeapon().GetName() << std::endl;
+			}
+			else
+			{
+				std::cout << "Invalid choice. Please select a valid weapon." << std::endl;
+			}
+		} while (!validChoice);
+
+		/*armor selection loop*/
+		std::cout << "Choose your Armor: \n";
+		for (size_t i = 0; i < armors.size(); ++i)
+		{
+			std::cout << i + 1 << ". " << armors[i].GetName() << " Defence Stat: " << armors[i].GetDefP() << std::endl;
+		}
+		int aChoice;
+		validChoice = false;
+		do
+		{
+			std::cout << "Enter the number of your choice: ";
+			std::cin >> aChoice;
+			if (aChoice >= 1 && aChoice <= armors.size())
+			{
+				selectedCharacter.setArmor(armors[aChoice - 1]);
+				validChoice = true;
+				std::cout << "You equipped: " << selectedCharacter.GetArmor().GetName() << std::endl;
+			}
+			else
+			{
+				std::cout << "Invalid choice. Please select a valid armor." << std::endl;
+			}
+		} while (!validChoice);
 
 
-				do
+		int playerStartHp = selectedCharacter.GetHp();
+		bool chooseAnotherMonster = false;
+		/*monster reselection loop*/
+		do
+		{
+			/*monster selection loop*/
+
+			for (size_t i = 0; i < monsters.size(); ++i)
+			{
+				std::cout << i + 1 << ". " << monsters[i].GetName() << std::endl;
+			}
+			Monster selectedMonster;
+			int mChoice;
+			validChoice = false;
+			do
+			{
+				std::cout << "Choose a monster to fight: ";
+				std::cin >> choice;
+				if (choice >= 1 && choice <= monsters.size())
 				{
+					selectedMonster = monsters[choice - 1];
+					validChoice = true;
+					std::cout << "You selected: " << selectedMonster.GetName() << std::endl;
+				}
+				else
+				{
+					std::cout << "Invalid choice. Please select a valid monster." << std::endl;
+				}
+			} while (!validChoice);
+			int monsterStartHp = selectedMonster.GetHp();
 
 
-					std::cout << "\nYour Turn: \n";
-					std::cout << "1. Attack\n";
-					std::cout << "2. Check Stats\n";
-					std::cout << "3. Defend\n";
-					std::cout << "Enter your choice: ";
-					std::cin >> battleChoice;
+			/*Damage calculation and display*/
+			int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
+			int playerDam = selectedCharacter.GetAttP() + weaponDam;
 
-					switch (battleChoice)
+			int dealtDam = playerDam - selectedMonster.GetDefP();
+			if (dealtDam < 0)
+			{
+				dealtDam = 0;
+			}
+
+			///*Player att */
+			//selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
+			//std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
+
+			///*Monster att */
+			//if (selectedMonster.GetHp() > 0)
+			//{
+			//	int monsterDam = selectedMonster.GetRandomAttP();
+			//	int playerDef = selectedCharacter.CalculateTotalDefP();
+
+			//	
+
+			//	int takenDam = (monsterDam * 2) - (playerDef / 2);
+			//	if (takenDam < 0)
+			//	{
+			//		takenDam = 0;
+			//	}
+			//	selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
+			//	std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
+			//}
+			//int monsterDam = selectedMonster.GetRandomAttP();
+			//int playerDef = selectedCharacter.CalculateTotalDefP();
+
+			//int takenDam = (monsterDam * 2) - (playerDef / 2);
+			//if (takenDam < 0)
+			//{
+			//	takenDam = 0;
+			//}
+			//selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
+			//std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
+			//
+
+
+
+
+
+
+			bool fightAgain = false;
+
+			do /*play again loop*/
+			{
+				selectedCharacter.setHp(playerStartHp);
+
+				selectedMonster.setHp(monsterStartHp);
+
+				while (selectedCharacter.GetHp() > 0 && selectedMonster.GetHp() > 0)
+				{
+					int battleChoice;
+					bool playerTurnOVer = false;
+					bool defending = false;
+
+
+					do
 					{
-					case 1: // Attack
+
+
+						std::cout << "\nYour Turn: \n";
+						std::cout << "1. Attack\n";
+						std::cout << "2. Check Stats\n";
+						std::cout << "3. Defend\n";
+						std::cout << "Enter your choice: ";
+						std::cin >> battleChoice;
+
+						switch (battleChoice)
+						{
+						case 1: // Attack
+						{
+							int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
+							int playerDam = selectedCharacter.GetAttP() + weaponDam;
+							int dealtDam = playerDam - selectedMonster.GetDefP();
+
+							if (dealtDam < 0)
+							{
+								dealtDam = 0;
+							}
+							selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
+							if (selectedMonster.GetHp() < 0)
+							{
+								selectedMonster.setHp(0);
+							}
+							std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
+
+							playerTurnOVer = true;
+							break;
+						}
+
+						case 2: // Check Stats
+
+							std::cout << "Character: " << selectedCharacter.GetName() << ", HP: " << selectedCharacter.GetHp() << ", Attack Power: " << selectedCharacter.CalculateTotalAttP()
+								<< ", Defense Power: " << selectedCharacter.CalculateTotalDefP() << ", Weapon: " << selectedCharacter.GetWeapon().GetName()
+								<< ", Armor: " << selectedCharacter.GetArmor().GetName() << std::endl;
+							break;
+
+						case 3: // Defend
+
+							defending = true;
+							playerTurnOVer = true;
+
+							std::cout << "You brace yourself for the next attack, increasing your defense!" << std::endl;
+
+
+							break;
+
+						default:
+
+							std::cout << "Invalid choice. Please select a valid option." << std::endl;
+							break;
+
+						}
+					} while (!playerTurnOVer);
+					if (selectedMonster.GetHp() <= 0)
 					{
-						int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
-						int playerDam = selectedCharacter.GetAttP() + weaponDam;
-						int dealtDam = playerDam - selectedMonster.GetDefP();
+						std::cout << "You defeated the " << selectedMonster.GetName() << "!" << std::endl;
+						break;
 
-						if (dealtDam < 0)
-						{
-							dealtDam = 0;
-						}
-						selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
-						if (selectedMonster.GetHp() < 0)
-						{
-							selectedMonster.setHp(0);
-						}
-						std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
+					}
+					// Player's turn
+					//int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
+					//int playerDam = selectedCharacter.GetAttP() + weaponDam;
+					//int dealtDam = playerDam - selectedMonster.GetDefP();
+					//if (dealtDam < 0)
+					//{
+					//	dealtDam = 0;
+					//}
+					//selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
+					//if (selectedMonster.GetHp() < 0)
+					//{
+					//	selectedMonster.setHp(0);
+					//}
+					//std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
+					//if (selectedMonster.GetHp() <= 0)
+					//{
+					//	std::cout << "You defeated the " << selectedMonster.GetName() << "!" << std::endl;
+					//	break;
+					//}
 
-						playerTurnOVer = true;
+					// Monster's turn
+					int monsterDam = selectedMonster.GetRandomAttP();
+					int playerDef = selectedCharacter.CalculateTotalDefP();
+					if (defending)
+					{
+						playerDef *= 2; // Double the defense if defending
+						defending = false; // Reset defending status for next turn
+					}
+					int takenDam = (monsterDam * 2) - (playerDef / 2);
+					if (takenDam < 0)
+					{
+						takenDam = 0;
+					}
+					selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
+					if (selectedCharacter.GetHp() < 0)
+					{
+						selectedCharacter.setHp(0);
+					}
+					std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
+					if (selectedCharacter.GetHp() <= 0)
+					{
+						std::cout << "You were defeated by the " << selectedMonster.GetName() << "." << std::endl;
 						break;
 					}
+				}
+				int postBattleChoice;
+				std::cout << "\nBattle Over! What would you like to do next?\n";
+				std::cout << "1. Fight Again\n";
+				std::cout << "2. Choose a Different Character\n";
+				std::cout << "3. Choose a Different Monster\n";
+				std::cout << "4. Exit Game\n";
+				std::cout << "Enter your choice: ";
+				std::cin >> postBattleChoice;
 
-					case 2: // Check Stats
-
-						std::cout << "Character: " << selectedCharacter.GetName() << ", HP: " << selectedCharacter.GetHp() << ", Attack Power: " << selectedCharacter.CalculateTotalAttP()
-							<< ", Defense Power: " << selectedCharacter.CalculateTotalDefP() << ", Weapon: " << selectedCharacter.GetWeapon().GetName()
-							<< ", Armor: " << selectedCharacter.GetArmor().GetName() << std::endl;
-						break;
-
-					case 3: // Defend
-
-						defending = true;
-						playerTurnOVer = true;
-
-						std::cout << "You brace yourself for the next attack, increasing your defense!" << std::endl;
-
-
-						break;
-
-					default:
-
-						std::cout << "Invalid choice. Please select a valid option." << std::endl;
-						break;
-
-					}
-				} while (!playerTurnOVer);
-				if (selectedMonster.GetHp() <= 0)
+				switch (postBattleChoice)
 				{
-					std::cout << "You defeated the " << selectedMonster.GetName() << "!" << std::endl;
+				case 1:
+					std::cout << "Restarting the battle with the same character and monster..." << std::endl;
+					fightAgain = true;
 					break;
 
-				}
-				// Player's turn
-				//int weaponDam = selectedCharacter.GetWeapon().GetRandomAttP();
-				//int playerDam = selectedCharacter.GetAttP() + weaponDam;
-				//int dealtDam = playerDam - selectedMonster.GetDefP();
-				//if (dealtDam < 0)
-				//{
-				//	dealtDam = 0;
-				//}
-				//selectedMonster.setHp(selectedMonster.GetHp() - dealtDam);
-				//if (selectedMonster.GetHp() < 0)
-				//{
-				//	selectedMonster.setHp(0);
-				//}
-				//std::cout << "You dealt " << dealtDam << " damage to the " << selectedMonster.GetName() << ". Remaining HP: " << selectedMonster.GetHp() << std::endl;
-				//if (selectedMonster.GetHp() <= 0)
-				//{
-				//	std::cout << "You defeated the " << selectedMonster.GetName() << "!" << std::endl;
-				//	break;
-				//}
+				case 2:
+					std::cout << "Returning to character selection..." << std::endl;
+					fightAgain = false;
+					chooseAnotherMonster = false;
+					chooseAnotherCharacter = true;
+					
+					break;
 
-				// Monster's turn
-				int monsterDam = selectedMonster.GetRandomAttP();
-				int playerDef = selectedCharacter.CalculateTotalDefP();
-				if (defending)
-				{
-					playerDef *= 2; // Double the defense if defending
-					defending = false; // Reset defending status for next turn
-				}
-				int takenDam = (monsterDam * 2) - (playerDef / 2);
-				if (takenDam < 0)
-				{
-					takenDam = 0;
-				}
-				selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
-				if (selectedCharacter.GetHp() < 0)
-				{
-					selectedCharacter.setHp(0);
-				}
-				std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
-				if (selectedCharacter.GetHp() <= 0)
-				{
-					std::cout << "You were defeated by the " << selectedMonster.GetName() << "." << std::endl;
+				case 3:
+					std::cout << "Returning to monster selection..." << std::endl;
+					fightAgain = false;
+					chooseAnotherMonster = true;
+					break;
+
+				case 4:
+					std::cout << "Exiting the game. Thank you for playing!" << std::endl;
+
+					return 0;
+
+				default:
+					std::cout << "Invalid Choice..." << std::endl;
+					fightAgain = false;
 					break;
 				}
-			}
-			int postBattleChoice;
-			std::cout << "\nBattle Over! What would you like to do next?\n";
-			std::cout << "1. Fight Again\n";
-			std::cout << "2. Choose a Different Character\n";
-			std::cout << "3. Choose a Different Monster\n";
-			std::cout << "4. Exit Game\n";
-			std::cout << "Enter your choice: ";
-			std::cin >> postBattleChoice;
+			} while (fightAgain);
 
-			switch (postBattleChoice)
-			{
-			case 1:
-				std::cout << "Restarting the battle with the same character and monster..." << std::endl;
-				fightAgain = true;
-				break;
+		} while (chooseAnotherMonster);
 
-			case 2:
-				std::cout << "Returning to character selection..." << std::endl;
-				fightAgain = false;
-				break;
+	} while (chooseAnotherCharacter);
 
-			case 3:
-				std::cout << "Returning to monster selection..." << std::endl;
-				fightAgain = false;
-				chooseAnotherMonster = true;
-				break;
-
-			case 4:
-				std::cout << "Exiting the game. Thank you for playing!" << std::endl;
-
-				return 0;
-
-			default:
-				std::cout << "Invalid Choice..." << std::endl;
-				fightAgain = false;
-				break;
-			}
-		} while (fightAgain);
-
-}while (chooseAnotherMonster);
 	
 
 }
