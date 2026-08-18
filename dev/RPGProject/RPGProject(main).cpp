@@ -144,6 +144,8 @@ int main()
 			std::cout << "Invalid choice. Please select a valid armor." << std::endl;
 		}
 	} while (!validChoice);
+
+
 	int playerStartHp = selectedCharacter.GetHp();
 	bool chooseAnotherMonster = false;
 	do 
@@ -216,7 +218,7 @@ int main()
 		//selectedCharacter.setHp(selectedCharacter.GetHp() - takenDam);
 		//std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
 		//
-		int playerStartHp = selectedCharacter.GetHp();
+		
 
 
 		
@@ -370,6 +372,7 @@ int main()
 			case 3:
 				std::cout << "Returning to monster selection..." << std::endl;
 				fightAgain = false;
+				chooseAnotherMonster = true;
 				break;
 
 			case 4:
