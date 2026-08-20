@@ -11,6 +11,9 @@ private:
 	int mMaxAttP;
 	int mDefP;
 
+	int mWins;
+	int mLosses;
+
 public:
 	Monster();
 	Monster(std::string name, int hp, int minAttP, int maxAttP, int defP);
@@ -31,5 +34,11 @@ public:
 	int GetDefP() const;
 
 	int GetRandomAttP() const;
+
+	void AddWin();
+	int GetWins() const;
+
+	void AddLoss();
+	int GetLosses() const;
 };
 

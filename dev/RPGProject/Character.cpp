@@ -8,6 +8,8 @@ Character::Character()
 	cAttP = 0;
 	cDefP = 0;
 	cUnlocked = false;
+	cWins = 0;
+	cLosses = 0;
 
 }
 
@@ -92,4 +94,22 @@ int Character::CalculateTotalAttP() const
 int Character::CalculateTotalDefP() const
 {
 	return cDefP + cArmor.GetDefP();
+}
+
+void Character::AddWin()
+{
+	cWins++;
+}
+int Character::GetWins() const
+{
+	return cWins;
+}
+
+void Character::AddLoss()
+{
+	cLosses++;
+}
+int Character::GetLosses() const
+{
+	return cLosses;
 }
