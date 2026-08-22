@@ -7,6 +7,9 @@ Monster::Monster()
 	mMinAttP = 0;
 	mMaxAttP = 0;
 	mDefP = 0;
+
+	mWins = 0;
+	mLosses = 0;
 }
 
 Monster::Monster(std::string name, int hp, int mMinAtt, int mMaxAtt, int mDef)
@@ -16,6 +19,9 @@ Monster::Monster(std::string name, int hp, int mMinAtt, int mMaxAtt, int mDef)
 	mMinAttP = mMinAtt;
 	mMaxAttP = mMaxAtt;
 	mDefP = mDef;
+
+	mWins = 0;
+	mLosses = 0;
 }
 
 void Monster::setName(std::string name)
@@ -74,3 +80,23 @@ int Monster::GetRandomAttP() const
 		return rand() % (mMaxAttP - mMinAttP + 1) + mMinAttP;
 	}
 }
+
+void Monster::AddWin()
+{
+	mWins++;
+}
+int Monster:: GetWins() const
+{
+	return mWins;
+}
+
+void Monster::AddLoss()
+{
+	mLosses++;
+}
+int Monster::GetLosses() const
+{
+	return mLosses;
+}
+
+

@@ -18,13 +18,13 @@ public:
 
 	bool StartMenu();
 
-	Character SelectCharacter(const std::vector<Character>& characters);
+	Character& SelectCharacter( std::vector<Character>& characters);
 
 	void SelectWeapon(Character& selectedCharacter, const std::vector<Item>& weapons);
 
 	void  SelectArmor(Character& selectedCharacter, const std::vector<Item>& armors);
 
-	Monster SelectMonster(const std::vector<Monster>& monsters);
+	Monster& SelectMonster( std::vector<Monster>& monsters);
 
 
 	void Battle(Character& selectedCharacter, Monster& selectedMonster);

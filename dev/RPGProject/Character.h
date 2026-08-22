@@ -13,6 +13,9 @@ private:
 	int cAttP;
 	int cDefP;
 	bool cUnlocked;
+	
+	int cWins;
+	int cLosses;
 
 	Item cWeapon;
 	Item cArmor;
@@ -45,6 +48,13 @@ public:
 
 	int CalculateTotalAttP() const;
 	int CalculateTotalDefP() const;
+
+	void AddWin();
+	int GetWins() const;
+
+	void AddLoss();
+	int GetLosses()const;
+
 
 	
 };

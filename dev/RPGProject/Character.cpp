@@ -9,6 +9,9 @@ Character::Character()
 	cDefP = 0;
 	cUnlocked = false;
 
+	cWins = 0;
+	cLosses = 0;
+
 }
 
 Character::Character(std::string name, int hp, int attP, int defP, bool unlocked, const Item& weapon, const Item& armor)
@@ -20,6 +23,9 @@ Character::Character(std::string name, int hp, int attP, int defP, bool unlocked
 	cUnlocked = unlocked;
 	cWeapon = weapon;
 	cArmor = armor;
+
+	cWins = 0;
+	cLosses = 0;
 }
 
 void Character::setName(std::string name)
@@ -92,4 +98,22 @@ int Character::CalculateTotalAttP() const
 int Character::CalculateTotalDefP() const
 {
 	return cDefP + cArmor.GetDefP();
+}
+
+void Character::AddWin()
+{
+	cWins++;
+}
+int Character::GetWins() const
+{
+	return cWins;
+}
+
+void Character::AddLoss()
+{
+	cLosses++;
+}
+int Character::GetLosses() const
+{
+	return cLosses;
 }
