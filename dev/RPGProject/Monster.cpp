@@ -19,6 +19,9 @@ Monster::Monster(std::string name, int hp, int mMinAtt, int mMaxAtt, int mDef)
 	mMinAttP = mMinAtt;
 	mMaxAttP = mMaxAtt;
 	mDefP = mDef;
+
+	mWins = 0;
+	mLosses = 0;
 }
 
 void Monster::setName(std::string name)

@@ -8,6 +8,7 @@ Character::Character()
 	cAttP = 0;
 	cDefP = 0;
 	cUnlocked = false;
+
 	cWins = 0;
 	cLosses = 0;
 
@@ -22,6 +23,9 @@ Character::Character(std::string name, int hp, int attP, int defP, bool unlocked
 	cUnlocked = unlocked;
 	cWeapon = weapon;
 	cArmor = armor;
+
+	cWins = 0;
+	cLosses = 0;
 }
 
 void Character::setName(std::string name)

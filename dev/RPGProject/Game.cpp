@@ -72,7 +72,7 @@ bool Game::StartMenu()
 	return false;
 }
 
-Character Game::SelectCharacter(const std::vector<Character>& characters)
+Character& Game::SelectCharacter(std::vector<Character>& characters)
 {
 	std::cout << "Choose your character: \n";
 
@@ -84,7 +84,7 @@ Character Game::SelectCharacter(const std::vector<Character>& characters)
 		}
 
 	}
-	Character selectedCharacter;
+	
 		int choice;
 		bool validChoice = false;
 		do
@@ -93,16 +93,17 @@ Character Game::SelectCharacter(const std::vector<Character>& characters)
 			std::cin >> choice;
 			if (choice >= 1 && choice <= characters.size() && characters[choice - 1].GetUnlocked())
 			{
-				selectedCharacter = characters[choice - 1];
+				
 				validChoice = true;
-				std::cout << "You selected: " << selectedCharacter.GetName() << std::endl;
+				std::cout << "You selected: " << characters[choice - 1].GetName() << std::endl;
+				return characters[choice - 1];
 			}
 			else
 			{
 				std::cout << "Invalid choice. Please select a valid character." << std::endl;
 			}
 		} while (!validChoice);
-		return selectedCharacter;
+		
 
 }
 
@@ -158,14 +159,14 @@ void Game::SelectArmor(Character& selectedCharacter, const std::vector<Item>& ar
 	} while (!validChoice);
 }
 
-Monster Game::SelectMonster(const std::vector<Monster>& monsters)
+Monster& Game::SelectMonster( std::vector<Monster>& monsters)
 {
 	std::cout << "Choose a monster to fight: \n";
 	for (std::size_t i = 0; i < monsters.size(); ++i)
 	{
 		std::cout << i + 1 << ". " << monsters[i].GetName() << std::endl;
 	}
-	Monster selectedMonster;
+	
 	int mChoice;
 	bool validChoice = false;
 	do
@@ -174,16 +175,17 @@ Monster Game::SelectMonster(const std::vector<Monster>& monsters)
 		std::cin >> mChoice;
 		if (mChoice >= 1 && mChoice <= monsters.size())
 		{
-			selectedMonster = monsters[mChoice - 1];
+			//selectedMonster = monsters[mChoice - 1];
 			validChoice = true;
-			std::cout << "You selected: " << selectedMonster.GetName() << std::endl;
+			std::cout << "You selected: " << monsters[mChoice - 1].GetName() << std::endl;
+			return monsters[mChoice - 1];
 		}
 		else
 		{
 			std::cout << "Invalid choice. Please select a valid monster." << std::endl;
 		}
 	} while (!validChoice);
-	return selectedMonster;
+	
 }	
 
 void Game::Battle(Character& selectedCharacter, Monster& selectedMonster)
@@ -234,7 +236,9 @@ void Game::Battle(Character& selectedCharacter, Monster& selectedMonster)
 
 				std::cout << "Character: " << selectedCharacter.GetName() << ", HP: " << selectedCharacter.GetHp() << ", Attack Power: " << selectedCharacter.CalculateTotalAttP()
 					<< ", Defense Power: " << selectedCharacter.CalculateTotalDefP() << ", Weapon: " << selectedCharacter.GetWeapon().GetName()
-					<< ", Armor: " << selectedCharacter.GetArmor().GetName() << std::endl;
+					<< ", Armor: " << selectedCharacter.GetArmor().GetName() << "\n"<< std::endl;
+
+				std::cout << selectedCharacter.GetName() << " - Wins: " << selectedCharacter.GetWins() << "		|	" << "Losses: " << selectedCharacter.GetLosses() << "\n" << std::endl;
 				break;
 
 			case 3: // Defend
@@ -256,7 +260,10 @@ void Game::Battle(Character& selectedCharacter, Monster& selectedMonster)
 		} while (!playerTurnOVer);
 		if (selectedMonster.GetHp() <= 0)
 		{
+			selectedCharacter.AddWin();
+			selectedMonster.AddLoss();
 			std::cout << "You defeated the " << selectedMonster.GetName() << "!" << std::endl;
+			
 			break;
 
 		}
@@ -280,6 +287,8 @@ void Game::Battle(Character& selectedCharacter, Monster& selectedMonster)
 		std::cout << "The " << selectedMonster.GetName() << " dealt " << takenDam << " damage to you. Remaining HP: " << selectedCharacter.GetHp() << std::endl;
 		if (selectedCharacter.GetHp() <= 0)
 		{
+			selectedCharacter.AddLoss();
+			selectedMonster.AddWin();
 			std::cout << "You were defeated by the " << selectedMonster.GetName() << "." << std::endl;
 			break;
 		}
@@ -312,58 +321,59 @@ int Game::PostBattleMenu()
 
 void Game::Run()
 {
-	bool chooseAnotherCharacter = false;
-	do
+	Character* selectedCharacter = &SelectCharacter(characters);
+	SelectWeapon(*selectedCharacter, weapons);
+	SelectArmor(*selectedCharacter, armors);
+
+	Monster* selectedMonster = &SelectMonster(monsters);
+
+	int playerStartHp = selectedCharacter->GetHp();
+	int monsterStartHp = selectedMonster->GetHp();
+
+	while (true)
 	{
-		chooseAnotherCharacter = false;
+		selectedCharacter->setHp(playerStartHp);
+		selectedMonster->setHp(monsterStartHp);
 
-		Character selectedCharacter = SelectCharacter(characters);
+		Battle(*selectedCharacter, *selectedMonster);
 
-		SelectWeapon(selectedCharacter, weapons);
-		SelectArmor(selectedCharacter, armors);
+		selectedCharacter->setHp(playerStartHp);
+		selectedMonster->setHp(monsterStartHp);
 
-		int playerStartHp = selectedCharacter.GetHp();
-
-		bool chooseAnotherMonster = false;
-		do
+		int postBattleChoice = PostBattleMenu();
+		switch (postBattleChoice)
 		{
-			chooseAnotherMonster = false;
-			Monster selectedMonster = SelectMonster(monsters);
+		case 1: //Rematch
+			
+			break;
 
-			int monsterStartHp = selectedMonster.GetHp();
+		case 2: //Different character, same monster.
+			selectedCharacter = &SelectCharacter(characters);
+			SelectWeapon(*selectedCharacter, weapons);
+			SelectArmor(*selectedCharacter, armors);
+			selectedCharacter->setHp(playerStartHp);
+			
+			
 
-			bool fightAgain = false;
-			do
-			{
-				selectedCharacter.setHp(playerStartHp);
-				selectedMonster.setHp(monsterStartHp);
+			
+			break;
 
-				Battle(selectedCharacter, selectedMonster);
+		case 3: //Same character, Different monster.
 
-				int postBattleChoice = PostBattleMenu();
-				switch (postBattleChoice)
-				{
-				case 1:
-					fightAgain = true;
-					break;
+			selectedMonster = &SelectMonster(monsters);
+			
+			selectedMonster->setHp(monsterStartHp);
 
-				case 2:
-					fightAgain = false;
-					chooseAnotherMonster = false;
-					chooseAnotherCharacter = false;
-					break;
+			
+			break;
 
-				case 3:
-					fightAgain = false;
-					chooseAnotherMonster = true;
-					chooseAnotherCharacter = false;
-					break;
+		case 4: //Exit
+			return;
 
-				case 4:
-					return;
+		}
 
-				}
-			} while (fightAgain);
-		} while (chooseAnotherMonster);
-	} while (chooseAnotherCharacter);
+
+	}
+	
+	
 }
