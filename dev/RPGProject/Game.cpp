@@ -241,7 +241,7 @@ void Game::Battle(Character& selectedCharacter, Monster& selectedMonster)
 				std::cout << selectedCharacter.GetName() << " - Wins: " << selectedCharacter.GetWins() << "		|	" << "Losses: " << selectedCharacter.GetLosses() << "\n" << std::endl;
 				break;
 
-			case 3: // Defend
+			case 3: // Defend 
 
 				defending = true;
 				playerTurnOVer = true;
