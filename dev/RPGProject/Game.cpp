@@ -20,9 +20,14 @@ Game::Game()
 	};
 	monsters =
 	{
-		Monster("Goblin", 50, 5, 8, 2),
-		Monster("Orc", 80, 8, 12, 4),
-		Monster("Dragon", 150, 15, 20, 10)
+		/*Unlocked Monster*/
+		Monster("Goblin", 50, 5, 8, 2, true),
+		Monster("Orc", 80, 8, 12, 4, true),
+		Monster("Dragon", 150, 15, 20, 10, true),
+
+		/*Locked Monster*/
+		Monster("Demon", 170, 22, 30, 17, false),
+		Monster("Angel", 220, 18, 22, 25, false),
 	};
 	characters =
 	{
@@ -32,7 +37,7 @@ Game::Game()
 		Character("Emmy", 80, 18, 8, true, weapons[0], armors[0]),
 
 		/*Locked Characters*/
-		Character("Lucy", 100, 15, 10, false, weapons[0], armors[0]),
+		Character("Lucy", 100, 1000, 10, false, weapons[0], armors[0]),
 		Character("Sam", 160, 20, 20, false, weapons[0], armors[0]),
 
 	};
@@ -169,7 +174,10 @@ Monster& Game::SelectMonster( std::vector<Monster>& monsters)
 	std::cout << "Choose a monster to fight: \n";
 	for (std::size_t i = 0; i < monsters.size(); ++i)
 	{
-		std::cout << i + 1 << ". " << monsters[i].GetName() << " - Wins: "<< monsters[i].GetWins()<< "	|	 Losses: "<< monsters[i].GetLosses()<< std::endl;
+		if (monsters[i].GetUnlocked())
+		{
+			std::cout << i + 1 << ". " << monsters[i].GetName() << " - Wins: " << monsters[i].GetWins() << "	|	 Losses: " << monsters[i].GetLosses() << std::endl;
+		}
 	}
 	
 	int mChoice;
@@ -178,7 +186,7 @@ Monster& Game::SelectMonster( std::vector<Monster>& monsters)
 	{
 		std::cout << "Enter the number of your choice: ";
 		std::cin >> mChoice;
-		if (mChoice >= 1 && mChoice <= monsters.size())
+		if (mChoice >= 1 && mChoice <= monsters.size() && monsters[mChoice- 1].GetUnlocked())
 		{
 			
 			validChoice = true;
@@ -326,7 +334,7 @@ int Game::PostBattleMenu()
 	}
 }
 
-void Game::UnclockCharacter()
+void Game::UnlockCharacter()
 {
 	int requiredMonDefeated = 0;
 	for (const Monster& monster : monsters)
@@ -345,13 +353,38 @@ void Game::UnclockCharacter()
 			if (character.GetName() == "Lucy" && !character.GetUnlocked())
 			{
 				character.setUnlocked(true);
-				std::cout<< "\n		*** Character Unlocked!***\n";
+				std::cout<< "\n		*** Character Unlocked! ***\n";
 				std::cout << "		Lucy is now Available!";
 			}
 		}
 	}
 	 
 	
+}
+void Game::UnlockMonsters()
+{
+	for (const Character& character : characters)
+	{
+		if (character.GetName() == "Lucy" && character.GetWins() >= 6)
+		{
+			for (const Monster& monster : monsters)
+			{
+				if (monster.GetName() == "Dragon" && monster.GetLosses() >= 6)
+				{
+					for (Monster& unlockMonster : monsters)
+					{
+						if (unlockMonster.GetName() == "Demon" && !unlockMonster.GetUnlocked())
+						{
+							unlockMonster.setUnlocked(true);
+
+							std::cout << "\n		*** New Enemy Unlocked! ***\n";
+							std::cout << "	Demon is unlocked!\n";
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void Game::Run()
@@ -372,7 +405,8 @@ void Game::Run()
 
 		Battle(*selectedCharacter, *selectedMonster);
 
-		UnclockCharacter();
+		UnlockCharacter();
+		UnlockMonsters();
 
 		selectedCharacter->setHp(playerStartHp);
 		selectedMonster->setHp(monsterStartHp);
