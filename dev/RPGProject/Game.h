@@ -20,6 +20,8 @@ public:
 
 	Character& SelectCharacter( std::vector<Character>& characters);
 
+	void UnclockCharacter();
+
 	void SelectWeapon(Character& selectedCharacter, const std::vector<Item>& weapons);
 
 	void  SelectArmor(Character& selectedCharacter, const std::vector<Item>& armors);
