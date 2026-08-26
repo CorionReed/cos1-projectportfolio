@@ -117,3 +117,12 @@ int Character::GetLosses() const
 {
 	return cLosses;
 }
+
+void Character::setWins(int wins)
+{
+	cWins = wins;
+}
+void Character::setLosses(int losses)
+{
+	cLosses = losses;
+}

@@ -110,3 +110,11 @@ bool Monster::GetUnlocked()const
 	return mUnlocked;
 }
 
+void Monster::setWins(int wins)
+{
+	mWins = wins;
+}
+void Monster::setLosses(int losses)
+{
+	mLosses = losses;
+}

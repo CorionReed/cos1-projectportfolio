@@ -35,6 +35,8 @@ public:
 
 	int PostBattleMenu();
 
+	void SaveProgress();
+	bool LoadProgress();
 	void Run();
 
 

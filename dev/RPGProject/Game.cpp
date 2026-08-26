@@ -1,5 +1,8 @@
 #include "Game.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
+
 
 Game::Game()
 {
@@ -58,9 +61,46 @@ bool Game::StartMenu()
 		switch (startChoice)
 		{
 		case 1:
-			return true;
-			
+		{
 
+
+			int gameChoice = 0;
+			while (gameChoice != 3)
+			{
+				std::cout << "\n1.	New Game\n";
+				std::cout << "\n2.	Load Game\n";
+				std::cout << "\n3.	Back\n";
+				std::cout << "\n Enter choice: ";
+				std::cin >> gameChoice;
+
+				switch (gameChoice)
+				{
+				case 1:
+
+					/*Starts a new defualt game*/
+					return true;
+
+				case 2:
+					if (LoadProgress())
+					{
+						std::cout << "\nGame Loaded SUCCESSFULLY!\n";
+						return true;
+					}
+					else 
+					{
+						break;
+					}
+
+				case 3:
+					break;
+
+				default:
+					std::cout << "Invalid choice. please try again...\n";
+					break;
+				}
+			}
+			break;
+		}
 		case 2:
 			std::cout << "How to Play:\n";
 			std::cout << "1. Choose a character from the available options.\n";
@@ -90,7 +130,7 @@ Character& Game::SelectCharacter(std::vector<Character>& characters)
 	{
 		if (characters[i].GetUnlocked())
 		{
-			std::cout << i + 1 << ". " << characters[i].GetName() << std::endl;
+			std::cout << i + 1 << ". " << characters[i].GetName() << "		Wins: "<< characters[i].GetWins()<< "	|	 "<< "Losses: "<< characters[i].GetLosses()<< std::endl;
 		}
 
 	}
@@ -319,10 +359,17 @@ int Game::PostBattleMenu()
 		std::cout << "1. Fight Again\n";
 		std::cout << "2. Choose a Different Character\n";
 		std::cout << "3. Choose a Different Monster\n";
-		std::cout << "4. Exit Game\n";
+		std::cout << "4. Save Game\n";
+		std::cout << "5. Exit Game\n";
 		std::cout << "Enter your choice: ";
 		std::cin >> postBattleChoice;
-		if (postBattleChoice >= 1 && postBattleChoice <= 4)
+		if (postBattleChoice == 4)
+		{
+			SaveProgress();
+			std::cout << "Your progress has been saved SUCCESSFULLY!\n";
+		}
+
+		else if (postBattleChoice >= 1 && postBattleChoice <= 3 || postBattleChoice == 5)
 		{
 			return postBattleChoice;
 		
@@ -386,6 +433,99 @@ void Game::UnlockMonsters()
 		}
 	}
 }
+void Game::SaveProgress()
+{
+	std::ofstream file("saveData.csv");
+
+	if (!file.is_open())
+	{
+		std::cout << "Could not save game data.\n";
+		return;
+
+	}
+	for (const Character& character : characters)
+	{
+		file << "Character," << character.GetName() << "," << character.GetWins() << "," << character.GetLosses() << "," << character.GetUnlocked() << "\n\n";
+
+	}
+	for (const Monster& monster : monsters)
+	{
+		file << "Monster," << monster.GetName() << "," << monster.GetWins() << "," << monster.GetLosses() << "," << monster.GetUnlocked() << "\n";
+	}
+	file.close();
+}
+bool Game::LoadProgress()
+{
+	std::ifstream file("saveData.csv");
+
+	if (!file.is_open())
+	{
+		std::cout << "\nNo saved game was found.\n";
+		return false;
+	}
+
+	std::string line;
+	while (std::getline(file, line))
+	{
+		if (line.empty())
+		{
+			continue;
+		}
+
+		std::stringstream ss(line);
+
+		std::string type;
+		std::string name;
+		std::string winsText;
+		std::string lossesText;
+		std::string unlockedText;
+
+		std::getline(ss, type, ',');
+		std::getline(ss, name, ',');
+		std::getline(ss, winsText, ',');
+		std::getline(ss, lossesText, ',');
+		std::getline(ss, unlockedText, ',');
+
+		if (type.empty() || name.empty() || winsText.empty() || lossesText.empty() || unlockedText.empty())
+		{
+			continue;
+		}
+
+		int wins = std::stoi(winsText);
+		int losses = std::stoi(lossesText);
+		bool unlocked = std::stoi(unlockedText);
+
+		if (type == "Character")
+		{
+			for (Character& character : characters)
+			{
+				if (character.GetName() == name)
+				{
+					character.setWins(wins);
+					character.setLosses(losses);
+					character.setUnlocked(unlocked);
+					break;
+				}
+			}
+		}
+		else if(type == "Monster")
+		{
+			for (Monster& monster : monsters)
+			{
+				if (monster.GetName() == name)
+				{
+					monster.setWins(wins);
+					monster.setLosses(losses);
+					monster.setUnlocked(unlocked);
+					break;
+				}
+			}
+		}
+	}
+	file.close();
+	
+	return true;
+}
 
 void Game::Run()
 {
@@ -438,7 +578,11 @@ void Game::Run()
 			
 			break;
 
-		case 4: //Exit
+		//case 4: //Save Progress
+		//	
+		//	break;
+			
+		case 5://Exit
 			return;
 
 		}

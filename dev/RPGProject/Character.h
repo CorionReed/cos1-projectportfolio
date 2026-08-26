@@ -55,6 +55,10 @@ public:
 	void AddLoss();
 	int GetLosses()const;
 
+	void setWins(int wins);
+	void setLosses(int losses);
+
+
 
 	
 };

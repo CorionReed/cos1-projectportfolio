@@ -45,5 +45,8 @@ public:
 
 	void setUnlocked(bool unlocked);
 	bool GetUnlocked() const;
+
+	void setWins(int wins);
+	void setLosses(int losses);
 };
 
