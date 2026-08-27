@@ -71,6 +71,8 @@ bool Game::StartMenu()
 			int gameChoice = 0;
 			while (gameChoice != 3)
 			{
+				bool chooseMode = false;
+
 				std::cout << "\n1.	New Game\n";
 				std::cout << "\n2.	Load Game\n";
 				std::cout << "\n3.	Back\n";
@@ -82,18 +84,22 @@ bool Game::StartMenu()
 				case 1:
 
 					/*Starts a new defualt game*/
-					return true;
+					//return true;
+					chooseMode = true;
+					break;
 
 				case 2:
 					if (LoadProgress())
 					{
 						std::cout << "\nGame Loaded SUCCESSFULLY!\n";
-						return true;
+						chooseMode = true;
+						//return true;
 					}
 					else 
 					{
 						break;
 					}
+					break;
 
 				case 3:
 					break;
@@ -101,6 +107,34 @@ bool Game::StartMenu()
 				default:
 					std::cout << "Invalid choice. please try again...\n";
 					break;
+				}
+				if (chooseMode)
+				{
+					int modeChoice = 0;
+
+					while (modeChoice != 3)
+					{
+						std::cout << "Choose a mode:\n";
+						std::cout << "1. Normal Mode\n";
+						std::cout << "2. Gauntlet Mode\n";
+						std::cout << "Enter Choice: ";
+						std::cin >> modeChoice;
+
+						switch (modeChoice)
+						{
+						case 1:
+							return true;
+						case 2:
+							GauntletMode();
+							break;
+						case 3:
+							break;
+						default:
+							std::cout << "Invalid choice. Please try again...\n";
+							break;
+						}
+
+					}
 				}
 			}
 			break;
@@ -416,7 +450,7 @@ void Game::GauntletMode()
 		/*for the last 4 rounds it will choose from the last 3 monsters*/
 		else
 		{
-			int startIndex = monsters.size() - 3;
+			int startIndex = static_cast<int>(monsters.size()) - 3;
 			monsterIndex = startIndex + (rand() % 3);
 		}
 		/*Restores the selected monster before each round*/
@@ -431,14 +465,39 @@ void Game::GauntletMode()
 		UnlockCharacter();
 		UnlockMonsters();
 
+		selectedMonster.setHp(monsterStartHp[monsterIndex]);
+
 		if (selectedCharacter->GetHp() <= 0)
 		{
 			std::cout << "\n" << selectedCharacter->GetName() << " has been DEFEATED in Round " << round << "!\n";
 			std::cout << "GAME OVER!\n";
+
+			selectedCharacter->setHp(maxPLayerHp);
+			selectedMonster.setHp(monsterStartHp[monsterIndex]);
 			return;
 		}
+		if (round % 3 == 0 && round < 10)
+		{
+			int healChoice;
+			std::cout << "\nYou have survived Round " << round << ".\n";
+			std::cout << "Would you like to heal?\n";
+			std::cout << "1. Yes?\n";
+			std::cout << "2. No?\n";
+			std::cout << "Please enter choice?";
+			std::cin >> healChoice;
 
+			if (healChoice == 1)
+			{
+				selectedCharacter->setHp(maxPLayerHp);
+				std::cout << "Your HP has been fully restored!\n";
+			}
+		}
 	}
+	std::cout << "***************************\n";
+	std::cout << "YOU HAVE CLEARED THE GAUNTLET\n";
+	std::cout << "***************************\n";
+
+	selectedCharacter->setHp(maxPLayerHp);
 }
 
 void Game::UnlockCharacter()
@@ -493,6 +552,12 @@ void Game::UnlockMonsters()
 		}
 	}
 }
+
+void Game::NewGame()
+{
+	//Resets all character records
+}
+
 void Game::SaveProgress()
 {
 	std::ofstream file("saveData.csv");
