@@ -32,6 +32,7 @@ public:
 
 
 	void Battle(Character& selectedCharacter, Monster& selectedMonster);
+	void GauntletMode();
 
 	int PostBattleMenu();
 

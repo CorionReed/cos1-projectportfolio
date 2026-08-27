@@ -11,7 +11,9 @@ Game::Game()
 		Item("none", "Weapon", 0, 0, 0),
 		Item("Sword", "Weapon", 8, 10, 0),
 		Item("Bow", "Weapon", 8, 12, 0),
-		Item("Axe", "Weapon", 12, 15, 0)
+		Item("Axe", "Weapon", 12, 15, 0),
+		Item("Katana", "Weapon", 17, 18, 0),
+		Item("Brass Knuckles", "Weapon", 6, 24, 0)
 	};
 
 	armors =
@@ -19,7 +21,9 @@ Game::Game()
 		Item("none", "Armor", 0, 0, 0),
 		Item("Helmet", "Armor",0, 0, 5),
 		Item("Chestplate", "Armor", 0, 0, 10),
-		Item("Leggings", "Armor", 0, 0, 8)
+		Item("Leggings", "Armor", 0, 0, 8),
+		
+
 	};
 	monsters =
 	{
@@ -29,19 +33,19 @@ Game::Game()
 		Monster("Dragon", 150, 15, 20, 10, true),
 
 		/*Locked Monster*/
-		Monster("Demon", 170, 22, 30, 17, false),
-		Monster("Angel", 220, 18, 22, 25, false),
+		Monster("Demon", 180, 22, 30, 17, false),
+		Monster("Angel", 250, 18, 22, 25, false),
 	};
 	characters =
 	{
 		/*UnLocked Characters*/
-		Character("Stoyer", 130, 1000, 18, true, weapons[0], armors[0]),
-		Character("Ken", 120, 12, 15, true, weapons[0], armors[0]),
-		Character("Emmy", 80, 18, 8, true, weapons[0], armors[0]),
+		Character("Stoyer", 150, 15, 18, true, weapons[0], armors[0]),
+		Character("Ken", 130, 17, 15, true, weapons[0], armors[0]),
+		Character("Emmy", 120, 20, 10, true, weapons[0], armors[0]),
 
 		/*Locked Characters*/
-		Character("Lucy", 100, 1000, 10, false, weapons[0], armors[0]),
-		Character("Sam", 160, 20, 20, false, weapons[0], armors[0]),
+		Character("Lucy", 220, 25, 10, false, weapons[0], armors[0]),
+		Character("Sam", 400, 40, 40, false, weapons[0], armors[0]),
 
 	};
 }
@@ -136,15 +140,15 @@ Character& Game::SelectCharacter(std::vector<Character>& characters)
 	}
 	
 		int choice;
-		bool validChoice = false;
-		do
+		
+		while(true)
 		{
 			std::cout << "Enter the number of your choice: ";
 			std::cin >> choice;
 			if (choice >= 1 && choice <= characters.size() && characters[choice - 1].GetUnlocked())
 			{
 				
-				validChoice = true;
+				
 				std::cout << "You selected: " << characters[choice - 1].GetName() << std::endl;
 				return characters[choice - 1];
 			}
@@ -152,7 +156,7 @@ Character& Game::SelectCharacter(std::vector<Character>& characters)
 			{
 				std::cout << "Invalid choice. Please select a valid character." << std::endl;
 			}
-		} while (!validChoice);
+		} 
 		
 
 }
@@ -221,15 +225,15 @@ Monster& Game::SelectMonster( std::vector<Monster>& monsters)
 	}
 	
 	int mChoice;
-	bool validChoice = false;
-	do
+	
+	while(true)
 	{
 		std::cout << "Enter the number of your choice: ";
 		std::cin >> mChoice;
 		if (mChoice >= 1 && mChoice <= monsters.size() && monsters[mChoice- 1].GetUnlocked())
 		{
 			
-			validChoice = true;
+			
 			std::cout << "You selected: " << monsters[mChoice - 1].GetName() << std::endl;
 			return monsters[mChoice - 1];
 		}
@@ -237,7 +241,7 @@ Monster& Game::SelectMonster( std::vector<Monster>& monsters)
 		{
 			std::cout << "Invalid choice. Please select a valid monster." << std::endl;
 		}
-	} while (!validChoice);
+	} 
 	
 }	
 
@@ -378,6 +382,62 @@ int Game::PostBattleMenu()
 		{
 			std::cout << "Invalid choice. Please select a valid option." << std::endl;
 		}
+	}
+}
+
+void Game::GauntletMode()
+{
+	Character* selectedCharacter = &SelectCharacter(characters);
+	SelectWeapon(*selectedCharacter, weapons);
+	SelectArmor(*selectedCharacter, armors);
+
+	int maxPLayerHp = selectedCharacter->GetHp();
+
+	//Save every monster's normal starting HP
+	std::vector<int>monsterStartHp;
+
+	for (const Monster& monster : monsters)
+	{
+		monsterStartHp.push_back(monster.GetHp());
+	}
+
+	for (int round = 1; round <= 10; ++round)
+	{
+		std::cout << "\n-----------------\n";
+		std::cout << "GAUNTLET ROUND " << round << "\n";
+		std::cout << "\n-----------------\n";
+
+		int monsterIndex;
+		/*for the first 6 round it will choose from the first 3 monsters*/
+		if (round <= 6)
+		{
+			monsterIndex = rand() % 3;
+		}
+		/*for the last 4 rounds it will choose from the last 3 monsters*/
+		else
+		{
+			int startIndex = monsters.size() - 3;
+			monsterIndex = startIndex + (rand() % 3);
+		}
+		/*Restores the selected monster before each round*/
+		Monster& selectedMonster = monsters[monsterIndex];
+
+		selectedMonster.setHp(monsterStartHp[monsterIndex]);
+
+		std::cout << "\nYour opponent is: " << selectedMonster.GetName() << std::endl;
+		std::cout << "Your current HP: " << selectedCharacter->GetHp() << std::endl;
+
+		Battle(*selectedCharacter, selectedMonster);
+		UnlockCharacter();
+		UnlockMonsters();
+
+		if (selectedCharacter->GetHp() <= 0)
+		{
+			std::cout << "\n" << selectedCharacter->GetName() << " has been DEFEATED in Round " << round << "!\n";
+			std::cout << "GAME OVER!\n";
+			return;
+		}
+
 	}
 }
 
