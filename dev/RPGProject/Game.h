@@ -34,6 +34,7 @@ public:
 	void Battle(Character& selectedCharacter, Monster& selectedMonster);
 	void NewGame();
 	void GauntletMode();
+	Character& GauntletCharacterSelect(std::vector<Character>& characters);
 
 	int PostBattleMenu();
 

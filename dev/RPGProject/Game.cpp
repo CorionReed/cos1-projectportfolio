@@ -12,7 +12,7 @@ Game::Game()
 		Item("Sword", "Weapon", 8, 10, 0),
 		Item("Bow", "Weapon", 8, 12, 0),
 		Item("Axe", "Weapon", 12, 15, 0),
-		Item("Katana", "Weapon", 17, 18, 0),
+		Item("Morning Star", "Weapon", 17, 18, 0),
 		Item("Brass Knuckles", "Weapon", 6, 24, 0)
 	};
 
@@ -83,8 +83,8 @@ bool Game::StartMenu()
 				{
 				case 1:
 
-					/*Starts a new defualt game*/
-					//return true;
+					
+					NewGame();
 					chooseMode = true;
 					break;
 
@@ -93,7 +93,7 @@ bool Game::StartMenu()
 					{
 						std::cout << "\nGame Loaded SUCCESSFULLY!\n";
 						chooseMode = true;
-						//return true;
+						
 					}
 					else 
 					{
@@ -418,10 +418,34 @@ int Game::PostBattleMenu()
 		}
 	}
 }
+Character& Game::GauntletCharacterSelect(std::vector<Character>& characters)
+{
+	std::cout << "\nChoose your character:\n";
+	for (std::size_t i = 0; i < characters.size(); ++i)
+	{
+		if (characters[i].GetUnlocked())
+		{
+			std::cout << i + 1 << ". " << characters[i].GetName() << " >> Gauntlet Clears: " << characters[i].GetGClears() << std::endl;
+		}
+	}
+	int choice;
+	while (true)
+	{
+		std::cout << "Who will you choose?";
+		std::cin >> choice;
+
+		if (choice >= 1 && choice <= characters.size() && characters[choice - 1].GetUnlocked())
+		{
+			std::cout << "You have selected: " << characters[choice - 1].GetName() << std::endl;
+			return characters[choice - 1];
+		}
+		std::cout << "Invalid choice. PLease try again..." << std::endl;
+	}
+}
 
 void Game::GauntletMode()
 {
-	Character* selectedCharacter = &SelectCharacter(characters);
+	Character* selectedCharacter = &GauntletCharacterSelect(characters);
 	SelectWeapon(*selectedCharacter, weapons);
 	SelectArmor(*selectedCharacter, armors);
 
@@ -497,6 +521,9 @@ void Game::GauntletMode()
 	std::cout << "YOU HAVE CLEARED THE GAUNTLET\n";
 	std::cout << "***************************\n";
 
+	selectedCharacter->AddGClears();
+	std::cout << "Gauntlet Clears: " << selectedCharacter->GetGClears() << std::endl;
+
 	selectedCharacter->setHp(maxPLayerHp);
 }
 
@@ -505,7 +532,7 @@ void Game::UnlockCharacter()
 	int requiredMonDefeated = 0;
 	for (const Monster& monster : monsters)
 	{
-		if ((monster.GetName() == "Goblin" || "Orc" || "Dragon") && monster.GetLosses() >= 3)
+		if ((monster.GetName() == "Goblin" || monster.GetName() == "Orc" || monster.GetName() == "Dragon") && monster.GetLosses() >= 3)
 		{
 			requiredMonDefeated++;
 
@@ -556,7 +583,45 @@ void Game::UnlockMonsters()
 void Game::NewGame()
 {
 	//Resets all character records
+	for (Character& character : characters)
+	{
+		character.setWins(0);
+		character.setLosses(0);
+		character.setGClears(0);
+
+	}
+	//Resets all monsters records
+	for (Monster& monster : monsters)
+	{
+		monster.setWins(0);
+		monster.setLosses(0);
+
+	}
+	//Reset your unlocks back to their NEW GAME defaults
+	for (Character& character : characters)
+	{
+		if (character.GetName() == "Lucy" || character.GetName() == "Sam")
+		{
+			character.setUnlocked(false);
+		}
+		else
+		{
+			character.setUnlocked(true);
+		}
+	}
+	for (Monster& monster : monsters)
+	{
+		if (monster.GetName() == "Demon" || monster.GetName() == "Angel")
+		{
+			monster.setUnlocked(false);
+		}
+		else
+		{
+			monster.setUnlocked(true);
+		}
+	}
 }
+
 
 void Game::SaveProgress()
 {
@@ -570,12 +635,12 @@ void Game::SaveProgress()
 	}
 	for (const Character& character : characters)
 	{
-		file << "Character," << character.GetName() << "," << character.GetWins() << "," << character.GetLosses() << "," << character.GetUnlocked() << "\n\n";
+		file << "Character," << character.GetName() << "," << character.GetWins() << "," << character.GetLosses() << "," << character.GetGClears() << character.GetUnlocked()  <<"\n";
 
 	}
 	for (const Monster& monster : monsters)
 	{
-		file << "Monster," << monster.GetName() << "," << monster.GetWins() << "," << monster.GetLosses() << "," << monster.GetUnlocked() << "\n";
+		file << "Monster," << monster.GetName() << "," << monster.GetWins() << "," << monster.GetLosses() << "," << monster.GetUnlocked() << 0 << "\n";
 	}
 	file.close();
 }
@@ -604,21 +669,28 @@ bool Game::LoadProgress()
 		std::string winsText;
 		std::string lossesText;
 		std::string unlockedText;
+		std::string gClearsText;
 
 		std::getline(ss, type, ',');
 		std::getline(ss, name, ',');
 		std::getline(ss, winsText, ',');
 		std::getline(ss, lossesText, ',');
 		std::getline(ss, unlockedText, ',');
+		std::getline(ss, gClearsText, ',');
 
 		if (type.empty() || name.empty() || winsText.empty() || lossesText.empty() || unlockedText.empty())
 		{
 			continue;
 		}
+		if (gClearsText.empty())
+		{
+			gClearsText = "0";
+		}
 
 		int wins = std::stoi(winsText);
 		int losses = std::stoi(lossesText);
 		bool unlocked = std::stoi(unlockedText);
+		int clears = std::stoi(gClearsText);
 
 		if (type == "Character")
 		{
@@ -629,6 +701,7 @@ bool Game::LoadProgress()
 					character.setWins(wins);
 					character.setLosses(losses);
 					character.setUnlocked(unlocked);
+					character.setGClears(clears);
 					break;
 				}
 			}
