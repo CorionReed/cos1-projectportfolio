@@ -522,6 +522,9 @@ void Game::GauntletMode()
 	std::cout << "***************************\n";
 
 	selectedCharacter->AddGClears();
+
+	UnlockCharacter();
+	UnlockMonsters();
 	std::cout << "Gauntlet Clears: " << selectedCharacter->GetGClears() << std::endl;
 
 	selectedCharacter->setHp(maxPLayerHp);
@@ -529,6 +532,7 @@ void Game::GauntletMode()
 
 void Game::UnlockCharacter()
 {
+	/*unlock Lucy*/
 	int requiredMonDefeated = 0;
 	for (const Monster& monster : monsters)
 	{
@@ -551,11 +555,29 @@ void Game::UnlockCharacter()
 			}
 		}
 	}
-	 
+	 /*unlock Sam*/
+	int totalGClears = 0;
+	for (const Character& character : characters)
+	{
+		totalGClears += character.GetGClears();
+	}
+	if (totalGClears >= 4)
+	{
+		for (Character& character : characters)
+		{
+			if (character.GetName() == "Sam" && !character.GetUnlocked())
+			{
+				character.setUnlocked(true);
+				std::cout << "\n		*** Character Unlocked! ***\n";
+				std::cout << "		Sam is now Available!";
+			}
+		}
+	}
 	
 }
 void Game::UnlockMonsters()
 {
+	/*unlock demon*/
 	for (const Character& character : characters)
 	{
 		if (character.GetName() == "Lucy" && character.GetWins() >= 6)
@@ -570,12 +592,31 @@ void Game::UnlockMonsters()
 						{
 							unlockMonster.setUnlocked(true);
 
-							std::cout << "\n		*** New Enemy Unlocked! ***\n";
+							std::cout << "\n	*** New Enemy Unlocked! ***\n";
 							std::cout << "	Demon is unlocked!\n";
 						}
 					}
 				}
 			}
+		}
+	}
+	/*unlock angel*/
+	int totalGClears = 0;
+	for (const Character& character : characters)
+	{
+		totalGClears += character.GetGClears();
+	}
+	if (totalGClears >= 1)
+	{
+		for (Monster& monster : monsters)
+		{
+			if (monster.GetName() == "Angel" && !monster.GetUnlocked())
+			{
+				monster.setUnlocked(true);
+				std::cout << "\n	*** New Enemy Unlocked! ***\n";
+				std::cout << "	Angel is unlocked!\n";
+			}
+
 		}
 	}
 }
