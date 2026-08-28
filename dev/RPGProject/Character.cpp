@@ -11,6 +11,7 @@ Character::Character()
 
 	cWins = 0;
 	cLosses = 0;
+	gClears = 0;
 
 }
 
@@ -26,6 +27,7 @@ Character::Character(std::string name, int hp, int attP, int defP, bool unlocked
 
 	cWins = 0;
 	cLosses = 0;
+	gClears = 0;
 }
 
 void Character::setName(std::string name)
@@ -116,4 +118,27 @@ void Character::AddLoss()
 int Character::GetLosses() const
 {
 	return cLosses;
+}
+
+void Character::setWins(int wins)
+{
+	cWins = wins;
+}
+void Character::setLosses(int losses)
+{
+	cLosses = losses;
+}
+
+void Character::AddGClears()
+{
+	gClears++;
+}
+int Character::GetGClears()const
+{
+	return gClears;
+}
+
+void Character::setGClears(int clears)
+{
+	gClears = clears;
 }

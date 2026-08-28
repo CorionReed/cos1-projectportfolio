@@ -7,18 +7,20 @@ Monster::Monster()
 	mMinAttP = 0;
 	mMaxAttP = 0;
 	mDefP = 0;
+	mUnlocked = false;
 
 	mWins = 0;
 	mLosses = 0;
 }
 
-Monster::Monster(std::string name, int hp, int mMinAtt, int mMaxAtt, int mDef)
+Monster::Monster(std::string name, int hp, int mMinAtt, int mMaxAtt, int mDef, bool unlocked)
 {
 	mName = name;
 	mHp = hp;
 	mMinAttP = mMinAtt;
 	mMaxAttP = mMaxAtt;
 	mDefP = mDef;
+	mUnlocked = unlocked;
 
 	mWins = 0;
 	mLosses = 0;
@@ -99,4 +101,20 @@ int Monster::GetLosses() const
 	return mLosses;
 }
 
+void Monster::setUnlocked(bool unlocked)
+{
+	mUnlocked = unlocked;
+}
+bool Monster::GetUnlocked()const
+{
+	return mUnlocked;
+}
 
+void Monster::setWins(int wins)
+{
+	mWins = wins;
+}
+void Monster::setLosses(int losses)
+{
+	mLosses = losses;
+}

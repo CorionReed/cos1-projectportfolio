@@ -13,9 +13,11 @@ private:
 	int cAttP;
 	int cDefP;
 	bool cUnlocked;
-	
+
 	int cWins;
 	int cLosses;
+	/*gauntlet clears*/
+	int gClears;
 
 	Item cWeapon;
 	Item cArmor;
@@ -55,7 +57,16 @@ public:
 	void AddLoss();
 	int GetLosses()const;
 
+	void setWins(int wins);
+	void setLosses(int losses);
+	/*Gauntlet Clears*/
+	void AddGClears();
+	int GetGClears()const;
 
-	
+	void setGClears(int clears);
+
+
+
+
 };
 

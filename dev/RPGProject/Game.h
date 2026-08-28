@@ -20,17 +20,26 @@ public:
 
 	Character& SelectCharacter( std::vector<Character>& characters);
 
+	void UnlockCharacter();
+
 	void SelectWeapon(Character& selectedCharacter, const std::vector<Item>& weapons);
 
 	void  SelectArmor(Character& selectedCharacter, const std::vector<Item>& armors);
 
 	Monster& SelectMonster( std::vector<Monster>& monsters);
 
+	void UnlockMonsters();
+
 
 	void Battle(Character& selectedCharacter, Monster& selectedMonster);
+	void NewGame();
+	void GauntletMode();
+	Character& GauntletCharacterSelect(std::vector<Character>& characters);
 
 	int PostBattleMenu();
 
+	void SaveProgress();
+	bool LoadProgress();
 	void Run();
 
 
