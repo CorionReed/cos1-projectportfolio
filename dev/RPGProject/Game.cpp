@@ -112,11 +112,13 @@ bool Game::StartMenu()
 				{
 					int modeChoice = 0;
 
-					while (modeChoice != 3)
+					while (modeChoice != 4)
 					{
 						std::cout << "Choose a mode:\n";
 						std::cout << "1. Normal Mode\n";
 						std::cout << "2. Gauntlet Mode\n";
+						std::cout << "3. Records/ Progress\n";
+						std::cout << "4. Back\n";
 						std::cout << "Enter Choice: ";
 						std::cin >> modeChoice;
 
@@ -128,6 +130,9 @@ bool Game::StartMenu()
 							GauntletMode();
 							break;
 						case 3:
+							DisplayProgress();
+							break;
+						case 4:
 							break;
 						default:
 							std::cout << "Invalid choice. Please try again...\n";
@@ -528,6 +533,48 @@ void Game::GauntletMode()
 	std::cout << "Gauntlet Clears: " << selectedCharacter->GetGClears() << std::endl;
 
 	selectedCharacter->setHp(maxPLayerHp);
+}
+
+void Game::DisplayProgress()
+{
+	std::cout << "\n*******************************\n";
+	std::cout << "		RECORDS/ PROGRESS\n";
+	std::cout << "			Characters\n";
+
+	for (const Character& character : characters)
+	{
+		std::cout << character.GetName();
+		if (character.GetUnlocked())
+		{
+			std::cout << " [UNLOCKED]" << "		Wins: "
+				<< character.GetWins() << " | Losses: " << character.GetLosses()<< " | Gauntlet Clears: "<< character.GetGClears();
+		}
+		else 
+		{
+			std::cout << " [LOCKED] ";
+		}
+		std::cout << std::endl;
+		
+	}
+	std::cout << "\n";
+	std::cout <<"			Monsters\n";
+	for (const Monster& monster:monsters)
+	{
+		std::cout << monster.GetName();
+		if (monster.GetUnlocked())
+		{
+			std::cout << "		Wins: " << monster.GetWins() << " | Losses: " << monster.GetLosses();
+
+		}
+		else
+		{
+			std::cout << " [LOCKED]";
+
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "\n*******************************\n";
+
 }
 
 void Game::UnlockCharacter()
