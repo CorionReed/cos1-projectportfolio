@@ -552,6 +552,16 @@ void Game::DisplayProgress()
 		else 
 		{
 			std::cout << " [LOCKED] ";
+
+			if (character.GetName()== "Lucy")
+			{
+				std::cout << "Hint: Defeat Goblin, Orc, and Dragon 3 times each.";
+
+			}
+			else if (character.GetName() == "Sam")
+			{
+				std::cout << "Hint: Clear the Gauntlet 4 times.";
+			}
 		}
 		std::cout << std::endl;
 		
@@ -569,6 +579,15 @@ void Game::DisplayProgress()
 		else
 		{
 			std::cout << " [LOCKED]";
+			
+			if (monster.GetName() == "Demon")
+			{
+				std::cout << "Hint: Lucy needs a total of 6 wins and Dragon needs a total of 6 losses.";
+			}
+			else if (monster.GetName() == "Angel")
+			{
+				std::cout << "Hint: Clear the Gauntlet for the first time.";
+			}
 
 		}
 		std::cout << std::endl;
@@ -848,7 +867,7 @@ void Game::Run()
 			selectedCharacter = &SelectCharacter(characters);
 			SelectWeapon(*selectedCharacter, weapons);
 			SelectArmor(*selectedCharacter, armors);
-			selectedCharacter->setHp(playerStartHp);
+			playerStartHp= selectedCharacter->GetHp();
 			
 			
 
@@ -859,7 +878,7 @@ void Game::Run()
 
 			selectedMonster = &SelectMonster(monsters);
 			
-			selectedMonster->setHp(monsterStartHp);
+			monsterStartHp= selectedMonster->GetHp();
 
 			
 			break;
