@@ -110,36 +110,8 @@ bool Game::StartMenu()
 				}
 				if (chooseMode)
 				{
-					int modeChoice = 0;
-
-					while (modeChoice != 4)
-					{
-						std::cout << "Choose a mode:\n";
-						std::cout << "1. Normal Mode\n";
-						std::cout << "2. Gauntlet Mode\n";
-						std::cout << "3. Records/ Progress\n";
-						std::cout << "4. Back\n";
-						std::cout << "Enter Choice: ";
-						std::cin >> modeChoice;
-
-						switch (modeChoice)
-						{
-						case 1:
-							return true;
-						case 2:
-							GauntletMode();
-							break;
-						case 3:
-							DisplayProgress();
-							break;
-						case 4:
-							break;
-						default:
-							std::cout << "Invalid choice. Please try again...\n";
-							break;
-						}
-
-					}
+					ModeMenu();
+					chooseMode = false;
 				}
 			}
 			break;
@@ -163,6 +135,41 @@ bool Game::StartMenu()
 		}
 	} 
 	return false;
+}
+void Game::ModeMenu()
+{
+	int modeChoice = 0;
+
+	while (modeChoice != 4)
+	{
+		std::cout << "Choose a mode:\n";
+		std::cout << "1. Normal Mode\n";
+		std::cout << "2. Gauntlet Mode\n";
+		std::cout << "3. Records/ Progress\n";
+		std::cout << "4. Back\n";
+		std::cout << "Enter Choice: ";
+		std::cin >> modeChoice;
+
+		switch (modeChoice)
+		{
+		case 1:
+			Run();
+			break;
+		case 2:
+			GauntletMode();
+			break;
+		case 3:
+			DisplayProgress();
+			break;
+		case 4:
+			break;
+		default:
+			std::cout << "Invalid choice. Please try again...\n";
+			break;
+		}
+
+	}
+
 }
 
 Character& Game::SelectCharacter(std::vector<Character>& characters)
@@ -403,7 +410,7 @@ int Game::PostBattleMenu()
 		std::cout << "2. Choose a Different Character\n";
 		std::cout << "3. Choose a Different Monster\n";
 		std::cout << "4. Save Game\n";
-		std::cout << "5. Exit Game\n";
+		std::cout << "5. Back to mode selection\n";
 		std::cout << "Enter your choice: ";
 		std::cin >> postBattleChoice;
 		if (postBattleChoice == 4)
