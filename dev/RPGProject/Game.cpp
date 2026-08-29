@@ -110,31 +110,8 @@ bool Game::StartMenu()
 				}
 				if (chooseMode)
 				{
-					int modeChoice = 0;
-
-					while (modeChoice != 3)
-					{
-						std::cout << "Choose a mode:\n";
-						std::cout << "1. Normal Mode\n";
-						std::cout << "2. Gauntlet Mode\n";
-						std::cout << "Enter Choice: ";
-						std::cin >> modeChoice;
-
-						switch (modeChoice)
-						{
-						case 1:
-							return true;
-						case 2:
-							GauntletMode();
-							break;
-						case 3:
-							break;
-						default:
-							std::cout << "Invalid choice. Please try again...\n";
-							break;
-						}
-
-					}
+					ModeMenu();
+					chooseMode = false;
 				}
 			}
 			break;
@@ -158,6 +135,41 @@ bool Game::StartMenu()
 		}
 	} 
 	return false;
+}
+void Game::ModeMenu()
+{
+	int modeChoice = 0;
+
+	while (modeChoice != 4)
+	{
+		std::cout << "Choose a mode:\n";
+		std::cout << "1. Normal Mode\n";
+		std::cout << "2. Gauntlet Mode\n";
+		std::cout << "3. Records/ Progress\n";
+		std::cout << "4. Back\n";
+		std::cout << "Enter Choice: ";
+		std::cin >> modeChoice;
+
+		switch (modeChoice)
+		{
+		case 1:
+			Run();
+			break;
+		case 2:
+			GauntletMode();
+			break;
+		case 3:
+			DisplayProgress();
+			break;
+		case 4:
+			break;
+		default:
+			std::cout << "Invalid choice. Please try again...\n";
+			break;
+		}
+
+	}
+
 }
 
 Character& Game::SelectCharacter(std::vector<Character>& characters)
@@ -398,7 +410,7 @@ int Game::PostBattleMenu()
 		std::cout << "2. Choose a Different Character\n";
 		std::cout << "3. Choose a Different Monster\n";
 		std::cout << "4. Save Game\n";
-		std::cout << "5. Exit Game\n";
+		std::cout << "5. Back to mode selection\n";
 		std::cout << "Enter your choice: ";
 		std::cin >> postBattleChoice;
 		if (postBattleChoice == 4)
@@ -522,13 +534,78 @@ void Game::GauntletMode()
 	std::cout << "***************************\n";
 
 	selectedCharacter->AddGClears();
+
+	UnlockCharacter();
+	UnlockMonsters();
 	std::cout << "Gauntlet Clears: " << selectedCharacter->GetGClears() << std::endl;
 
 	selectedCharacter->setHp(maxPLayerHp);
 }
 
+void Game::DisplayProgress()
+{
+	std::cout << "\n*******************************\n";
+	std::cout << "		RECORDS/ PROGRESS\n";
+	std::cout << "			Characters\n";
+
+	for (const Character& character : characters)
+	{
+		std::cout << character.GetName();
+		if (character.GetUnlocked())
+		{
+			std::cout << " [UNLOCKED]" << "		Wins: "
+				<< character.GetWins() << " | Losses: " << character.GetLosses()<< " | Gauntlet Clears: "<< character.GetGClears();
+		}
+		else 
+		{
+			std::cout << " [LOCKED] ";
+
+			if (character.GetName()== "Lucy")
+			{
+				std::cout << "Hint: Defeat Goblin, Orc, and Dragon 3 times each.";
+
+			}
+			else if (character.GetName() == "Sam")
+			{
+				std::cout << "Hint: Clear the Gauntlet 4 times.";
+			}
+		}
+		std::cout << std::endl;
+		
+	}
+	std::cout << "\n";
+	std::cout <<"			Monsters\n";
+	for (const Monster& monster:monsters)
+	{
+		std::cout << monster.GetName();
+		if (monster.GetUnlocked())
+		{
+			std::cout << "		Wins: " << monster.GetWins() << " | Losses: " << monster.GetLosses();
+
+		}
+		else
+		{
+			std::cout << " [LOCKED]";
+			
+			if (monster.GetName() == "Demon")
+			{
+				std::cout << "Hint: Lucy needs a total of 6 wins and Dragon needs a total of 6 losses.";
+			}
+			else if (monster.GetName() == "Angel")
+			{
+				std::cout << "Hint: Clear the Gauntlet for the first time.";
+			}
+
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "\n*******************************\n";
+
+}
+
 void Game::UnlockCharacter()
 {
+	/*unlock Lucy*/
 	int requiredMonDefeated = 0;
 	for (const Monster& monster : monsters)
 	{
@@ -551,11 +628,29 @@ void Game::UnlockCharacter()
 			}
 		}
 	}
-	 
+	 /*unlock Sam*/
+	int totalGClears = 0;
+	for (const Character& character : characters)
+	{
+		totalGClears += character.GetGClears();
+	}
+	if (totalGClears >= 4)
+	{
+		for (Character& character : characters)
+		{
+			if (character.GetName() == "Sam" && !character.GetUnlocked())
+			{
+				character.setUnlocked(true);
+				std::cout << "\n		*** Character Unlocked! ***\n";
+				std::cout << "		Sam is now Available!";
+			}
+		}
+	}
 	
 }
 void Game::UnlockMonsters()
 {
+	/*unlock demon*/
 	for (const Character& character : characters)
 	{
 		if (character.GetName() == "Lucy" && character.GetWins() >= 6)
@@ -570,12 +665,31 @@ void Game::UnlockMonsters()
 						{
 							unlockMonster.setUnlocked(true);
 
-							std::cout << "\n		*** New Enemy Unlocked! ***\n";
+							std::cout << "\n	*** New Enemy Unlocked! ***\n";
 							std::cout << "	Demon is unlocked!\n";
 						}
 					}
 				}
 			}
+		}
+	}
+	/*unlock angel*/
+	int totalGClears = 0;
+	for (const Character& character : characters)
+	{
+		totalGClears += character.GetGClears();
+	}
+	if (totalGClears >= 1)
+	{
+		for (Monster& monster : monsters)
+		{
+			if (monster.GetName() == "Angel" && !monster.GetUnlocked())
+			{
+				monster.setUnlocked(true);
+				std::cout << "\n	*** New Enemy Unlocked! ***\n";
+				std::cout << "	Angel is unlocked!\n";
+			}
+
 		}
 	}
 }
@@ -760,7 +874,7 @@ void Game::Run()
 			selectedCharacter = &SelectCharacter(characters);
 			SelectWeapon(*selectedCharacter, weapons);
 			SelectArmor(*selectedCharacter, armors);
-			selectedCharacter->setHp(playerStartHp);
+			playerStartHp= selectedCharacter->GetHp();
 			
 			
 
@@ -771,7 +885,7 @@ void Game::Run()
 
 			selectedMonster = &SelectMonster(monsters);
 			
-			selectedMonster->setHp(monsterStartHp);
+			monsterStartHp= selectedMonster->GetHp();
 
 			
 			break;

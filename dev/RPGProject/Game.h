@@ -37,6 +37,9 @@ public:
 	Character& GauntletCharacterSelect(std::vector<Character>& characters);
 
 	int PostBattleMenu();
+	void ModeMenu();
+
+	void DisplayProgress();
 
 	void SaveProgress();
 	bool LoadProgress();
